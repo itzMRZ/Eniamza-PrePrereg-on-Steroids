@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Scheduler Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <style>
+    .active-selected {
+      outline: 2px solid #ff9900;
+      cursor: pointer;
+    }
+    /* Modern Toggle Switch Styles */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 56px;
+      height: 28px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #a0aec0; /* Gray-400 */
+      transition: 0.4s;
+      border-radius: 9999px;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+    /* When checked, move the slider */
+    .toggle-switch input:checked + .toggle-slider {
+      background-color: #38a169; /* Green-500 */
+    }
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(28px);
+    }
+    /* Live indicator separate element */
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #38a169;
+    }
+    .live-indicator .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #38a169;
+      animation: breathing 2s infinite;
+    }
+    @keyframes breathing {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.4); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.8; }
+    }
+    /* Enhanced Search Bar Styles */
+    .search-container {
+      position: relative;
+      flex-grow: 1;
+    }
+    .search-container input {
+      width: 100%;
+      padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+      background-color: rgba(31, 41, 55, 0.8); /* Semi-transparent dark background */
+      border: 2px solid transparent;
+      border-radius: 0.5rem;
+      color: #f9fafb;
+      font-size: 0.875rem;
+      transition: border 0.3s ease, box-shadow 0.3s ease;
+    }
+    .search-container input::placeholder {
+      color: #cbd5e0;
+    }
+    .search-container input:focus {
+      outline: none;
+      border-color: #3b82f6; /* Blue border on focus */
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+    .search-icon {
+      position: absolute;
+      top: 50%;
+      right: 0.75rem;
+      transform: translateY(-50%);
+      color: #cbd5e0;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white">
+  <div class="container mx-auto p-4">
+    <!-- Course Selection Interface -->
+    <div class="grid grid-cols-2 gap-4 mb-8">
+      <!-- Selection Panel -->
+      <div class="space-y-4">
+        <!-- Enhanced Search input with complete toggle switch -->
+        <div class="flex items-center justify-between">
+          <div class="search-container mr-4">
+            <input id="search-input" type="text" placeholder="Search courses..." />
+            <i class="fas fa-search search-icon"></i>
+          </div>
+          <div class="toggle-container">
+            <!-- Toggle Switch -->
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle-switch">
+              <span class="toggle-slider"></span>
+            </label>
+            <!-- Toggle Label -->
+            <span id="toggle-label" class="text-sm font-semibold">Archive</span>
+          </div>
+        </div>
+        <!-- Live Indicator (shown only in online mode) -->
+        <div id="live-indicator" class="live-indicator hidden">
+          <div class="dot"></div>
+          <span>Live</span>
+        </div>
+        <!-- Live Warning Message -->
+        <div id="live-warning" class="hidden text-yellow-400 text-xs">
+          Warning: Due to Connect update, live data may not load labs data.
+        </div>
+
+        <div class="flex space-x-4">
+          <div class="flex-1 bg-gray-800 rounded-lg p-2">
+            <h3 class="font-bold text-sm mb-1">Available Courses</h3>
+            <select id="available-courses" multiple class="w-full h-36 bg-gray-700 rounded p-1 text-sm focus:outline-none"></select>
+          </div>
+          <div class="flex flex-col justify-between h-36 space-y-1">
+            <button id="add-course" class="w-8 h-8 text-xs bg-green-600 rounded hover:bg-green-700 transition-colors flex items-center justify-center">
+              <i class="fas fa-arrow-right"></i>
+            </button>
+            <button id="remove-course" class="w-8 h-8 text-xs bg-red-600 rounded hover:bg-red-700 transition-colors flex items-center justify-center">
+              <i class="fas fa-arrow-left"></i>
+            </button>
+            <button id="drop-all-selected" class="w-8 h-8 text-xs bg-yellow-600 rounded hover:bg-yellow-700 transition-colors flex items-center justify-center">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          <div class="flex-1 bg-gray-800 rounded-lg p-2">
+            <h3 class="font-bold text-sm mb-1">Selected Courses</h3>
+            <div id="selected-courses" class="w-full h-36 bg-gray-700 rounded p-1 text-sm overflow-y-auto"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Course Information Panel -->
+      <div class="bg-gray-800 p-4 rounded-lg">
+        <h2 class="text-xl font-bold mb-3">Course Information</h2>
+        <div class="space-y-2 text-sm">
+          <p><span class="font-semibold">Course:</span> <span id="course-name">-</span></p>
+          <p><span class="font-semibold">Faculty:</span> <span id="faculty">-</span></p>
+          <p><span class="font-semibold">Section:</span> <span id="section">-</span></p>
+          <p><span class="font-semibold">Schedule:</span> <span id="time">-</span></p>
+          <p>
+            <span class="font-semibold">Seats:</span>
+            <span id="remaining">-</span>/<span id="total-seat">-</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Table -->
+    <div class="bg-gray-800 rounded-lg p-3 max-w-[1200px] mx-auto">
+      <h2 class="text-2xl font-bold mb-3 text-center">Class Schedule</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full" id="schedule-table">
+          <thead class="bg-gray-850">
+            <tr>
+              <th class="px-2 py-1 text-left border-r border-gray-700">Time</th>
+              <th class="px-2 py-1 border-r border-gray-700">Sun</th>
+              <th class="px-2 py-1 border-r border-gray-700">Mon</th>
+              <th class="px-2 py-1 border-r border-gray-700">Tue</th>
+              <th class="px-2 py-1 border-r border-gray-700">Wed</th>
+              <th class="px-2 py-1 border-r border-gray-700">Thu</th>
+              <th class="px-2 py-1 border-r border-gray-700">Fri</th>
+              <th class="px-2 py-1">Sat</th>
+            </tr>
+          </thead>
+          <tbody id="schedule" class="divide-y divide-gray-700 text-center">
+            <!-- Schedule rows will be generated here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mt-6 flex justify-center gap-4">
+        <button id="screenshot-btn" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+          <i class="fas fa-camera mr-2"></i>Capture Schedule
+        </button>
+        <button id="copy-routine" class="bg-gray-800 px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors font-mono text-blue-400">
+          Click to copy Routine ID
+        </button>
+        <a id="homies-btn" href="https://homies-unlocked-itzmrzs.vercel.app/" target="_blank" class="bg-gray-800 px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-gray-700 transition-colors">
+          <span>HomiesUnlocked</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="fixed bottom-4 right-4 z-50 space-y-2"></div>
+
+  <script>
+    // Global Variables
+    let allCourses = [];
+    let selectedCourses = [];
+    // Default mode is archive (offline) so default URL is the local JSON file.
+    let dataUrl = "spring-usisdump.json";
+    const timeSlots = [
+      { start: '8:00 AM', end: '9:20 AM', startMin: 480, endMin: 560 },
+      { start: '9:30 AM', end: '10:50 AM', startMin: 570, endMin: 650 },
+      { start: '11:00 AM', end: '12:20 PM', startMin: 660, endMin: 740 },
+      { start: '12:30 PM', end: '1:50 PM', startMin: 750, endMin: 830 },
+      { start: '2:00 PM', end: '3:20 PM', startMin: 840, endMin: 920 },
+      { start: '3:30 PM', end: '4:50 PM', startMin: 930, endMin: 1010 },
+      { start: '5:00 PM', end: '6:20 PM', startMin: 1020, endMin: 1100 }
+    ];
+
+    // Cached DOM References
+    const availableList = document.getElementById('available-courses');
+    const selectedContainer = document.getElementById('selected-courses');
+    const scheduleBody = document.getElementById('schedule');
+    const toastContainer = document.getElementById('toastContainer');
+    const toggleSwitch = document.getElementById('toggle-switch');
+    const toggleLabel = document.getElementById('toggle-label');
+    const liveIndicator = document.getElementById('live-indicator');
+    const liveWarning = document.getElementById('live-warning');
+
+    // Utility Functions
+    const debounce = (func, wait) => {
+      let timeout;
+      return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), wait);
+      };
+    };
+
+    const convertTime = timeStr => {
+      const [hours, minutes] = timeStr.split(':').map(Number);
+      return hours * 60 + minutes;
+    };
+
+    const timeOverlap = (a, b) => a.start < b.end && b.start < a.end;
+
+    const formatTime = timeString => {
+      const [hours, minutes] = timeString.split(':');
+      const hour = parseInt(hours);
+      const suffix = hour >= 12 ? 'PM' : 'AM';
+      const twelveHour = hour % 12 || 12;
+      return `${twelveHour}:${minutes} ${suffix}`;
+    };
+
+    // Data Fetching and Rendering
+    const fetchCourseData = async () => {
+      try {
+        const response = await fetch(dataUrl);
+        allCourses = await response.json();
+        populateAvailableCourses(allCourses);
+      } catch (error) {
+        console.error('Error loading course data:', error);
+      }
+    };
+
+    const populateAvailableCourses = courses => {
+      availableList.innerHTML = '';
+      courses.sort((a, b) => {
+        const cmp = a.courseCode.localeCompare(b.courseCode);
+        return cmp === 0 ? parseInt(a.sectionName) - parseInt(b.sectionName) : cmp;
+      });
+      const fragment = document.createDocumentFragment();
+      courses.forEach(course => {
+        const option = new Option(
+          `${course.courseCode} - ${course.sectionName} (${course.faculties})`,
+          JSON.stringify(course)
+        );
+        fragment.appendChild(option);
+      });
+      availableList.appendChild(fragment);
+    };
+
+    const updateCourseInfo = course => {
+      document.getElementById('course-name').textContent = course.courseCode || '-';
+      document.getElementById('faculty').textContent = course.faculties || '-';
+      document.getElementById('section').textContent = course.sectionName || '-';
+
+      if (course.sectionSchedule && course.sectionSchedule.classSchedules?.length) {
+        const formatTimeRange = (startTime, endTime) => {
+          startTime = startTime.toLowerCase();
+          endTime = endTime.toLowerCase();
+          const startMatch = startTime.match(/(\d+:\d+)(am|pm)/);
+          const endMatch = endTime.match(/(\d+:\d+)(am|pm)/);
+          if (startMatch && endMatch) {
+            return startMatch[2] === endMatch[2]
+              ? `${startMatch[1]}-${endMatch[1]}${startMatch[2]}`
+              : `${startMatch[1]}${startMatch[2]}-${endMatch[1]}${endMatch[2]}`;
+          }
+          return `${startTime}-${endTime}`;
+        };
+
+        const classLines = course.sectionSchedule.classSchedules
+          .map(s => `${s.day} ${formatTimeRange(s.startTime, s.endTime)}`);
+        let output = `Class: ${classLines.join('<br>')}`;
+        if (course.labSchedules?.length) {
+          const labLines = course.labSchedules.map(s => `${s.day} ${formatTimeRange(s.startTime, s.endTime)}`);
+          output += `<br>Lab: ${labLines.join('<br>')}`;
+        }
+        document.getElementById('time').innerHTML = output;
+      } else {
+        document.getElementById('time').textContent = '-';
+      }
+
+      // Update seat information only in live mode.
+      if (toggleSwitch.checked) {
+        const capacity = course.capacity ?? '-';
+        const consumed = course.consumedSeat ?? 0;
+        document.getElementById('remaining').textContent = capacity !== '-' ? capacity - consumed : '-';
+        document.getElementById('total-seat').textContent = capacity;
+      } else {
+        document.getElementById('remaining').textContent = "-";
+        document.getElementById('total-seat').textContent = "-";
+      }
+    };
+
+    const updateScheduleTable = () => {
+      scheduleBody.innerHTML = '';
+      timeSlots.forEach(slot => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="p-3 border-b border-gray-700">${slot.start}<br>${slot.end}</td>
+          ${Array(7).fill().map((_, i) => `<td class="p-3 border-b border-gray-700 ${i === 6 ? '' : 'border-r'}"></td>`).join('')}
+        `;
+        scheduleBody.appendChild(row);
+      });
+      const courseIntervals = [];
+      selectedCourses.forEach(course => {
+        const processSchedule = (schedule, type) => {
+          const day = schedule.day.toLowerCase();
+          courseIntervals.push({
+            courseId: course.sectionId,
+            day,
+            start: convertTime(schedule.startTime),
+            end: convertTime(schedule.endTime),
+            type,
+            course
+          });
+        };
+        course.sectionSchedule.classSchedules.forEach(s => processSchedule(s, 'Class'));
+        if (course.labSchedules) course.labSchedules.forEach(s => processSchedule(s, 'Lab'));
+      });
+      const conflicts = new Set();
+      for (let i = 0; i < courseIntervals.length; i++) {
+        for (let j = i + 1; j < courseIntervals.length; j++) {
+          if (courseIntervals[i].day === courseIntervals[j].day && timeOverlap(courseIntervals[i], courseIntervals[j])) {
+            conflicts.add(courseIntervals[i].courseId);
+            conflicts.add(courseIntervals[j].courseId);
+          }
+        }
+      }
+      courseIntervals.forEach(interval => {
+        const dayIndex = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].indexOf(interval.day);
+        if (dayIndex === -1) return;
+        const affectedSlots = timeSlots
+          .map((slot, index) => ({ index, slot }))
+          .filter(({ slot }) => interval.start < slot.endMin && interval.end > slot.startMin);
+        affectedSlots.forEach(({ index }) => {
+          const cell = scheduleBody.rows[index].cells[dayIndex + 1];
+          const isConflict = conflicts.has(interval.courseId);
+          cell.insertAdjacentHTML('beforeend', `
+            <div class="p-2 rounded text-sm mb-1 ${isConflict ? 'bg-red-900' : interval.type === 'Lab' ? 'bg-purple-800' : 'bg-gray-700'}">
+              <div class="font-semibold">${interval.course.courseCode} [${interval.course.sectionName}] - ${interval.course.faculties}</div>
+              <div class="text-gray-300">${interval.type === 'Lab' ? interval.course.labRoomName : interval.course.roomName}</div>
+              ${isConflict ? '<div class="text-red-300 mt-1">Conflict</div>' : ''}
+            </div>
+          `);
+        });
+      });
+    };
+
+    // Update the selected courses from the freshly fetched course data.
+    // This function finds updated info from allCourses based on courseCode and sectionName.
+    const updateSelectedCourses = () => {
+      selectedCourses = selectedCourses.map(sel => {
+        const updated = allCourses.find(c => c.courseCode === sel.courseCode && c.sectionName === sel.sectionName);
+        return updated || sel;
+      });
+      updateScheduleTable();
+      // Update course info panel if a course is highlighted.
+      const highlighted = selectedContainer.querySelector('.active-selected');
+      if (highlighted) {
+        const index = Array.from(selectedContainer.children).indexOf(highlighted);
+        if (index !== -1) {
+          updateCourseInfo(selectedCourses[index]);
+        }
+      }
+    };
+
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchCourseData();
+    });
+
+    // Toggle switch event: update data source, UI, re-fetch data, and update routine.
+    toggleSwitch.addEventListener('change', async () => {
+      if (toggleSwitch.checked) {
+        dataUrl = "https://usis-cdn.eniamza.com/connect.json";
+        toggleLabel.textContent = "Live";
+        liveIndicator.classList.remove("hidden");
+        liveWarning.classList.remove("hidden");
+      } else {
+        dataUrl = "spring-usisdump.json";
+        toggleLabel.textContent = "Archive";
+        liveIndicator.classList.add("hidden");
+        liveWarning.classList.add("hidden");
+      }
+      await fetchCourseData();
+      // Update selected courses (and thus rebuild the routine) using the newly fetched data.
+      updateSelectedCourses();
+    });
+
+    // When clicking a course in the selected list, highlight it and update course info.
+    selectedContainer.addEventListener('click', e => {
+      const entry = e.target.closest('div.bg-gray-700');
+      if (!entry) return;
+      Array.from(selectedContainer.children).forEach(child => child.classList.remove('active-selected'));
+      entry.classList.add('active-selected');
+      const index = Array.from(selectedContainer.children).indexOf(entry);
+      if (index !== -1) updateCourseInfo(selectedCourses[index]);
+    });
+
+    // Update course info when selecting an available course.
+    availableList.addEventListener('change', e => {
+      const selectedOption = e.target.selectedOptions[0];
+      if (selectedOption) {
+        const course = JSON.parse(selectedOption.value);
+        updateCourseInfo(course);
+      }
+    });
+
+    // Add course to the selected list.
+    document.getElementById('add-course').addEventListener('click', () => {
+      const selectedOption = availableList.selectedOptions[0];
+      if (!selectedOption) return;
+      const newCourse = JSON.parse(selectedOption.value);
+      if (selectedCourses.some(c => c.courseCode === newCourse.courseCode)) {
+        showToast("You cannot add more than one section of the same course. Please drop the other section first!", "warning");
+        return;
+      }
+      selectedCourses.push(newCourse);
+      const courseEntry = document.createElement('div');
+      courseEntry.className = 'bg-gray-700 p-2 mb-2 rounded text-sm';
+      courseEntry.textContent = `${newCourse.courseCode} - ${newCourse.sectionName}`;
+      selectedContainer.appendChild(courseEntry);
+      availableList.remove(selectedOption.index);
+      updateScheduleTable();
+    });
+
+    // Remove a highlighted course from the selected list.
+    document.getElementById('remove-course').addEventListener('click', () => {
+      const entries = Array.from(selectedContainer.children);
+      for (let i = entries.length - 1; i >= 0; i--) {
+        if (entries[i].classList.contains('active-selected')) {
+          const removedCourse = selectedCourses.splice(i, 1)[0];
+          selectedContainer.removeChild(entries[i]);
+          const option = new Option(
+            `${removedCourse.courseCode} - ${removedCourse.sectionName} (${removedCourse.faculties})`,
+            JSON.stringify(removedCourse)
+          );
+          availableList.add(option);
+        }
+      }
+      updateScheduleTable();
+    });
+
+    // Remove all selected courses.
+    document.getElementById('drop-all-selected').addEventListener('click', () => {
+      selectedCourses.forEach(course => {
+        const option = new Option(
+          `${course.courseCode} - ${course.sectionName} (${course.faculties})`,
+          JSON.stringify(course)
+        );
+        availableList.add(option);
+      });
+      selectedCourses = [];
+      selectedContainer.innerHTML = '';
+      updateScheduleTable();
+    });
+
+    // Search/filter available courses with debouncing.
+    document.getElementById('search-input').addEventListener('input', debounce(e => {
+      const term = e.target.value.toLowerCase();
+      const filtered = allCourses.filter(course =>
+        course.courseCode.toLowerCase().includes(term) ||
+        course.sectionName.toLowerCase().includes(term) ||
+        course.faculties.toLowerCase().includes(term)
+      );
+      populateAvailableCourses(filtered);
+    }, 300));
+
+    // Copy routine data to clipboard.
+    document.getElementById('copy-routine').addEventListener('click', () => {
+      const routineData = selectedCourses.map(course => {
+        const classTimes = course.sectionSchedule.classSchedules
+          .map(s => `${s.day} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`)
+          .join(', ');
+        const labTimes = course.labSchedules
+          ? course.labSchedules.map(s => `${s.day} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`).join(', ')
+          : 'N/A';
+        return {
+          Course: course.courseCode,
+          section: `Section ${course.sectionName}`,
+          faculty: course.faculties,
+          Class: classTimes,
+          Class_room: course.roomName,
+          Lab: labTimes,
+          Lab_room: course.labRoomName || 'N/A',
+          Exam: `Mid: ${course.sectionSchedule.midExamDetail}, Final: ${course.sectionSchedule.finalExamDetail}`
+        };
+      });
+      navigator.clipboard.writeText(JSON.stringify(routineData, null, 2));
+      showToast('Routine copied to clipboard!');
+    });
+
+    // Capture a screenshot of the schedule.
+    document.getElementById('screenshot-btn').addEventListener('click', () => {
+      const originalTable = document.querySelector("#schedule-table");
+      const clonedTable = originalTable.cloneNode(true);
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.top = '-10000px';
+      container.style.left = '-10000px';
+      container.appendChild(clonedTable);
+      document.body.appendChild(container);
+      clonedTable.style.backgroundColor = '#1f2937';
+      clonedTable.style.color = '#ffffff';
+      clonedTable.querySelectorAll('td, th').forEach(cell => {
+        cell.style.backgroundColor = '#1f2937';
+        cell.style.color = '#ffffff';
+        cell.style.borderColor = '#374151';
+      });
+      html2canvas(clonedTable).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'schedule-screenshot.png';
+        link.href = canvas.toDataURL();
+        link.click();
+        showToast('Screenshot captured!');
+        document.body.removeChild(container);
+      });
+    });
+
+    // Toast Notification Function.
+    const showToast = (message, type = "info") => {
+      if (!toastContainer) return;
+      const bgClasses = {
+        success: "bg-green-600",
+        warning: "bg-yellow-600",
+        error: "bg-red-600",
+        info: "bg-blue-600"
+      };
+      const toast = document.createElement('div');
+      toast.className = `${bgClasses[type] || bgClasses.info} text-white px-4 py-2 rounded shadow transition-opacity duration-300 opacity-100`;
+      toast.textContent = message;
+      toastContainer.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.add("opacity-0");
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    };
+  </script>
+</body>
+</html>
