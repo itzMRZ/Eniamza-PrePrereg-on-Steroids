@@ -227,7 +227,7 @@
     let allCourses = [];
     let selectedCourses = [];
     // Default mode is archive (offline) so default URL is the local JSON file.
-    let dataUrl = "spring-usisdump (3).json";
+    let dataUrl = "spring-usisdump.json";
     const timeSlots = [
       { start: '8:00 AM', end: '9:20 AM', startMin: 480, endMin: 560 },
       { start: '9:30 AM', end: '10:50 AM', startMin: 570, endMin: 650 },
@@ -429,7 +429,7 @@
         liveIndicator.classList.remove("hidden");
         liveWarning.classList.remove("hidden");
       } else {
-        dataUrl = "spring-usisdump (3).json";
+        dataUrl = "spring-usisdump.json";
         toggleLabel.textContent = "Archive";
         liveIndicator.classList.add("hidden");
         liveWarning.classList.add("hidden");
