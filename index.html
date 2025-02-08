@@ -276,7 +276,7 @@
       background-color: #1f2937;
     }
     /* =====================================================
-       Footer Styling (Not fixed – appears at end of scrolling)
+       Footer Styling (static – appears at end of scrolling)
        ===================================================== */
     footer {
       background: #1a202c;
@@ -414,11 +414,11 @@
             <span id="course-name">-</span>
           </div>
           <div class="flex justify-between">
-            <span class="font-semibold">Faculty:</span>
+            <span class="font-semibold">faculty:</span>
             <span id="faculty">-</span>
           </div>
           <div class="flex justify-between">
-            <span class="font-semibold">Section:</span>
+            <span class="font-semibold">section:</span>
             <span id="section">-</span>
           </div>
           <div class="flex justify-between">
@@ -490,13 +490,17 @@
       </div>
       <div class="ack-content" style="max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s ease;">
         <p class="text-sm">
-          This site owes its existence to the invaluable support and resources of Tashfeen vai,
+          This site owes its existence to the invaluable support and resources of Tashfeen,
           aka <a href="https://github.com/Eniamza" class="inline-flex items-center gap-1 font-bold transition-colors duration-300" target="_blank" rel="noopener noreferrer">
             <i class="bi bi-github"></i> Eniamza
           </a>.
         </p>
         <hr class="my-2 border-gray-500" />
-
+        <p class="text-sm">
+          Another special thanks to <a href="https://github.com/mahathirmoon" class="inline-flex items-center gap-1 font-bold transition-colors duration-300" target="_blank" rel="noopener noreferrer">
+            <i class="bi bi-github"></i> Moon
+          </a>.
+        </p>
       </div>
     </div>
   </div>
@@ -506,17 +510,10 @@
        ===================================================== -->
   <footer>
     <div class="footer-content">
-      <!-- Logo Image for By MRZ (replace 'logo.png' with your logo file path) -->
+      <!-- Logo Image for By MRZ (replace 'logo.png' with your actual logo file path) -->
+      <img src="logo.png" alt="MRZ Logo" />
       <!-- "By MRZ" Text -->
-      <a href="https://github.com/itzMRZ" class="flex items-center justify-center gap-2 text-sm font-bold text-white transition-colors duration-300 hover:text-gray-400">
-        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-          <path fill-rule="evenodd"
-                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                clip-rule="evenodd"/>
-        </svg>
-        By MRZ
-      </a>
-
+      <a href="https://github.com/itzMRZ/HomiesUnlocked">By MRZ</a>
     </div>
   </footer>
 
@@ -635,11 +632,11 @@
         };
 
         const classLines = course.sectionSchedule.classSchedules
-          .map(s => `${s.day} ${formatTimeRange(s.startTime, s.endTime)}`);
-        let output = `Class: ${classLines.join('<br>')}`;
+          .map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`);
+        let output = `Class: ${classLines.join(', ')}`;
         if (course.labSchedules?.length) {
-          const labLines = course.labSchedules.map(s => `${s.day} ${formatTimeRange(s.startTime, s.endTime)}`);
-          output += `<br>Lab: ${labLines.join('<br>')}`;
+          const labLines = course.labSchedules.map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`);
+          output += `<br>Lab: ${labLines.join(', ')}`;
         }
         document.getElementById('time').innerHTML = output;
       } else {
@@ -863,26 +860,40 @@
       populateAvailableCourses(filtered);
     }, 300));
 
-    // Copy Routine ID event: copies formatted routine data to the clipboard
+    /***************************************************
+     * Updated Copy Routine ID Functionality
+     * Formats the output JSON as requested (with case-sensitive keys)
+     ***************************************************/
     document.getElementById('copy-routine').addEventListener('click', () => {
       const routineData = selectedCourses.map(course => {
+        // Format the class schedule with uppercase day names
         const classTimes = course.sectionSchedule.classSchedules
-          .map(s => `${s.day} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`)
+          .map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`)
           .join(', ');
-        const labTimes = course.labSchedules
-          ? course.labSchedules.map(s => `${s.day} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`).join(', ')
-          : 'N/A';
+
+        // Format lab schedule if available; otherwise, return "N/A"
+        const labTimes = (course.labSchedules && course.labSchedules.length)
+          ? course.labSchedules.map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`).join(', ')
+          : "N/A";
+
+        // Use exam details if available; otherwise, fallback to "N/A"
+        const midExam = course.sectionSchedule.midExamDetail ? course.sectionSchedule.midExamDetail : "N/A";
+        const finalExam = course.sectionSchedule.finalExamDetail ? course.sectionSchedule.finalExamDetail : "N/A";
+        const examDetails = `Mid: ${midExam}, Final: ${finalExam}`;
+
         return {
-          Course: course.courseCode,
-          Section: `Section ${course.sectionName}`,
-          Faculty: course.faculties,
-          Class: classTimes,
-          Class_Room: course.roomName,
-          Lab: labTimes,
-          Lab_Room: course.labRoomName || 'N/A',
-          Exam: `Mid: ${course.sectionSchedule.midExamDetail}, Final: ${course.sectionSchedule.finalExamDetail}`
+          "Course": course.courseCode,
+          "section": `Section ${course.sectionName}`,
+          "faculty": course.faculties,
+          "Class": classTimes,
+          "Class_room": course.roomName,
+          "Lab": labTimes,
+          "Lab_room": course.labRoomName ? course.labRoomName : "N/A",
+          "Exam": examDetails
         };
       });
+
+      // Copy the formatted JSON to the clipboard with 2-space indentation
       navigator.clipboard.writeText(JSON.stringify(routineData, null, 2));
       showToast('Routine copied to clipboard!');
     });
