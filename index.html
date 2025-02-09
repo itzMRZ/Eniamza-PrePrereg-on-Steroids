@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <!-- Responsive viewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Routine ID Generator</title>
   <!-- Favicon -->
   <link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAABP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAQAAAAABEAABEAAAABEAAAARAAABEAEAAAEQABEAARAAABEBEAAAEQAAARARAAABEAARAAEQAAAQARAAABEAAAARAAAAARAAARAAAAAAEAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rel="icon" type="image/x-icon">
@@ -11,59 +11,29 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-  <!-- Bootstrap Icons (for acknowledgements) -->
+  <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <!-- html2canvas for screenshot functionality -->
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lobster&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    footer {
-  background: #1f2937; /* Changed to match UI dark theme */
-  padding: 0.5rem 0; /* Reduced padding */
-  text-align: center;
-  box-shadow: 0 -1px 3px rgba(0,0,0,0.1); /* Subtle shadow */
-}
-
-footer .footer-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 24px; /* Fixed height */
-}
-
-footer .footer-content a {
-  color: #e5e7eb; /* Light gray to match theme */
-  text-decoration: none;
-  font-size: 0.875rem; /* 14px */
-  font-weight: 500; /* Medium weight */
-  transition: color 0.2s ease;
-  padding: 0.25rem 0.5rem; /* Small padding */
-  border-radius: 0.25rem;
-}
-
-footer .footer-content a:hover {
-  color: #60a5fa; /* Blue hover state */
-  background-color: rgba(255,255,255,0.05); /* Subtle hover background */
-}
-
-    .footer-content a:hover {
-  color: #007bff; /* Example hover color (blue) */
-}
-
-    /* =====================================================
-       Global Styles and Transitions
-       ===================================================== */
+    /* Global Styles */
     body {
       font-family: 'Inter', sans-serif;
-      transition: background-color 0.4s ease, color 0.4s ease;
-      /* Added bottom padding so content does not touch footer */
+      background-color: #1f2937;
+      color: #f9fafb;
       padding-bottom: 2rem;
+      transition: background-color 0.4s ease, color 0.4s ease;
     }
-    /* Header styling */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    /* Header */
     header {
       background: linear-gradient(135deg, #2d3748, #1a202c);
-      padding: 1.5rem 1rem;
+      padding: 2rem 1rem;
       text-align: center;
     }
     header h1 {
@@ -72,430 +42,434 @@ footer .footer-content a:hover {
       font-weight: bold;
     }
     header p {
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
-    /* Tagline spark animation */
-    @keyframes sparkEffect {
-      0% { text-shadow: 0 0 2px rgba(255,255,255,0.2); }
-      50% { text-shadow: 0 0 10px rgba(255,255,255,0.8); }
-      100% { text-shadow: 0 0 2px rgba(255,255,255,0.2); }
-    }
-    .sparked {
-      animation: sparkEffect 2s ease-out;
-    }
-    /* =====================================================
-       UI Components: Help Button, Toggle, etc.
-       ===================================================== */
-    .help-btn {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background: #2d3748;
-      color: #f9fafb;
-      padding: 0.5rem 0.75rem;
-      border-radius: 9999px;
+    /* CTA Box */
+    .cta-box {
+      background-color: #2d3748;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      text-align: center;
       box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-      cursor: pointer;
-      z-index: 50;
+      margin-bottom: 2rem;
+    }
+    .cta-btn {
+      background: linear-gradient(to right, #8b5cf6, #6366f1);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      font-size: 1.2rem;
+      border-radius: 9999px;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .cta-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 8px rgba(0,0,0,0.5);
+    }
+    /* Combined Toggle & Search Bar Container (shifted right) */
+    .flex-container {
+      display: flex;
+      justify-content: flex-start; /* Changed from flex-end to flex-start */
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    /* Toggle Switch & Live Indicator */
+    .toggle-wrapper {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      transition: transform 0.3s ease;
+      margin-left: auto; /* This pushes the toggle to the right */
     }
-    .help-btn:hover {
-      transform: scale(1.1);
+    /* Fixed width label so search bar does not shift */
+    #toggle-label {
+      display: inline-block;
+      width: 3rem;
+      text-align: center;
+      font-size: 0.875rem;
     }
-    .selected-course-item {
-      transition: background-color 0.3s ease, transform 0.3s ease;
-      will-change: transform, background-color;
-    }
-    .selected-course-item:hover {
-      background-color: #4a5568;
-      transform: scale(1.02);
-    }
-    .selected-course-item.active-selected {
-      outline: 2px solid #ff9900;
-    }
-    /* Toggle Switch Styles */
-    .toggle-switch {
-      width: 56px;
-      height: 28px;
-      flex-shrink: 0;
+    .inline-toggle {
       position: relative;
-    }
-    .toggle-container {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 0.75rem;
-      flex-shrink: 0;
-      min-width: 80px; /* Ensures toggle container does not collapse */
+      cursor: pointer;
     }
-    .toggle-switch input {
+    .inline-toggle input {
+      position: absolute;
       opacity: 0;
       width: 0;
       height: 0;
     }
-    .toggle-slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #a0aec0;
-      transition: 0.4s;
+    .toggle-bg {
+      width: 2.75rem;
+      height: 1.5rem;
+      background-color: #d1d5db; /* gray-300 */
       border-radius: 9999px;
+      transition: background-color 0.3s ease;
     }
-    .toggle-slider:before {
+    .inline-toggle input:checked + .toggle-bg {
+      background-color: #3b82f6; /* blue-500 */
+    }
+    .toggle-dot {
       position: absolute;
-      content: "";
-      height: 22px;
-      width: 22px;
-      left: 3px;
-      bottom: 3px;
+      top: 0.125rem;
+      left: 0.125rem;
+      width: 1.25rem;
+      height: 1.25rem;
       background-color: white;
-      transition: 0.4s;
       border-radius: 50%;
+      transition: transform 0.3s ease;
     }
-    .toggle-switch input:checked + .toggle-slider {
-      background-color: #38a169;
+    .inline-toggle input:checked + .toggle-bg .toggle-dot {
+      transform: translateX(1.25rem);
     }
-    .toggle-switch input:checked + .toggle-slider:before {
-      transform: translateX(28px);
+    /* Live Indicator: Only LED, no text */
+    #live-indicator {
+      display: inline-block;
     }
-    /* Live Indicator Styles */
-    .live-indicator {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #38a169;
-    }
-    .live-indicator .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: #38a169;
-      animation: breathing 2s infinite;
-    }
-    @keyframes breathing {
-      0% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.4); opacity: 1; }
-      100% { transform: scale(1); opacity: 0.8; }
-    }
-    /* =====================================================
-       Search Bar Styling
-       ===================================================== */
+    /* Search Container */
     .search-container {
       position: relative;
-      flex-grow: 1;
+      flex: 1;
+      /* Remove max-width to allow search bar to extend */
+      margin-right: 1rem; /* Add margin to maintain spacing with toggle */
     }
     .search-container input {
       width: 100%;
-      height: 2.5rem;
-      padding: 0 2.5rem 0 0.75rem;
+      padding: 0.5rem 2.5rem 0.5rem 0.75rem;
       border: 1px solid #4a5568;
       border-radius: 0.375rem;
       background-color: #2d3748;
       color: #f9fafb;
-      font-size: 1rem;
+      outline: none;
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
-      resize: none;
-      -webkit-appearance: none;
     }
     .search-container input:focus {
       border-color: #3b82f6;
       box-shadow: 0 0 0 3px rgba(59,130,246,0.3);
-      outline: none;
     }
-    .search-icon {
+    .search-container .fa-search {
       position: absolute;
       top: 50%;
       right: 0.75rem;
       transform: translateY(-50%);
       color: #cbd5e0;
     }
-    /* --- Hover effect for available courses (options) --- */
-    select#available-courses option:hover {
-      background-color: #4a5568;
-      color: #fff;
+    /* Courses Grid: Four Columns on PC, Stacked on Mobile */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
     }
-    /* =====================================================
-       Action Buttons & Glow Animation
-       ===================================================== */
-    @keyframes glowAnimation {
-      0% { box-shadow: 0 0 0px rgba(255,255,255,0); }
-      50% { box-shadow: 0 0 10px rgba(255,255,255,0.7); }
-      100% { box-shadow: 0 0 0px rgba(255,255,255,0); }
+    @media (min-width: 1024px) {
+      .courses-grid {
+        grid-template-columns: 1fr auto 1fr 1fr;
+      }
     }
-    .glow-button {
-      animation: glowAnimation 2s ease-out;
-    }
-    .action-btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 9999px;
-    }
-    /* Table cell minimum width */
-    th, td { min-width: 80px; }
-    @media (min-width: 768px) { th, td { min-width: 120px; } }
-    /* =====================================================
-       Acknowledgements Styling
-       ===================================================== */
-    .acknowledgements {
-      max-width: 300px;
-      margin: 1.5rem auto;
-      padding: 1rem;
+    .courses-box {
       background-color: #2d3748;
-      border: 1px solid #4a5568;
       border-radius: 0.5rem;
-      text-align: center;
-      font-size: 0.9rem;
-      line-height: 1.5;
+      padding: 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
-    .ack-header {
-      padding: 0.5rem;
-      cursor: pointer;
+    /* Buttons Column */
+    .buttons-col {
       display: flex;
+      flex-direction: row;
       justify-content: center;
       align-items: center;
+      gap: 1rem;
+    }
+    @media (min-width: 1024px) {
+      .buttons-col {
+        flex-direction: column;
+      }
+    }
+    .buttons-col button {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
       transition: background-color 0.3s ease;
     }
-    .ack-header:hover {
-      background-color: #334155;
+    .buttons-col button:hover {
+      filter: brightness(110%);
     }
-    .ack-content {
-      max-height: 0;
-      opacity: 0;
-      padding: 0 1rem;
-      transition: all 0.4s ease;
-      overflow: hidden;
+    /* Selected Courses */
+    #selected-courses {
+      background-color: #374151;
+      border-radius: 0.375rem;
+      padding: 0.5rem;
+      overflow-y: auto;
+      height: 12rem;
     }
-    .ack-content.active {
-      max-height: 500px;
-      opacity: 1;
+    .selected-course-item {
+      background-color: #4b5563;
+      padding: 0.5rem;
+      border-radius: 0.375rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .selected-course-item:hover {
+      background-color: #6b7280;
+      transform: scale(1.02);
+    }
+    .selected-course-item.active-selected {
+      outline: 2px solid #ff9900;
+    }
+    /* Course Info Box – using min-height so it grows as needed */
+    .info-box {
+      background-color: #2d3748;
+      border-radius: 0.5rem;
       padding: 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      min-height: 6rem;
     }
-    .arrow {
-      transition: transform 0.3s ease;
-      margin-left: 0.5rem;
-    }
-    .arrow.active {
-      transform: rotate(180deg);
-    }
-    /* =====================================================
-       Processing Overlay (for screenshot animation)
-       ===================================================== */
-    @keyframes pulse {
-      0% { opacity: 0.7; }
-      50% { opacity: 0.9; }
-      100% { opacity: 0.7; }
-    }
-    /* =====================================================
-       Help Modal Styling
-       ===================================================== */
-    #helpModal {
-      z-index: 1000;
-      transition: opacity 0.3s ease;
-    }
-    /* =====================================================
-       Screenshot Target Styling
-       (Ensures consistent font, size, and color)
-       ===================================================== */
-    #combined-routine {
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      color: #f9fafb;
+    /* Schedule Table: Ensure text color is clear */
+    #schedule-container {
+      overflow-x: auto;
+      margin-top: 2rem;
       background-color: #1f2937;
+      transition: all 0.3s ease;
     }
-    /* =====================================================
-       Footer Styling (static – appears at end of scrolling)
-       ===================================================== */
+    #schedule-table th,
+    #schedule-table td {
+      min-width: 80px;
+      padding: 0.5rem;
+      border: 1px solid #4a5568;
+      text-align: center;
+      color: #f9fafb;
+    }
+    /* Acknowledgements using <details> */
+    details.acknowledgements {
+      max-width: 400px;
+      margin: 2rem auto 0;
+      background-color: #2d3748;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    details.acknowledgements summary {
+      list-style: none;
+      cursor: pointer;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    details.acknowledgements summary::-webkit-details-marker {
+      display: none;
+    }
+    /* Footer */
     footer {
       background: #1a202c;
       box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
       padding: 1rem 0;
       text-align: center;
+      margin-top: 2rem;
     }
-    footer .footer-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    footer .footer-content img {
-      height: 40px; /* Adjust logo size as needed */
-      margin-bottom: 0.5rem;
-    }
-    footer .footer-content a {
+    footer a {
       color: #fff;
       text-decoration: none;
       font-size: 0.9rem;
       font-weight: bold;
       transition: color 0.3s ease;
     }
-    footer .footer-content a:hover {
+    footer a:hover {
       color: #a0aec0;
+    }
+    /* Toast */
+    #toastContainer {
+      z-index: 1000;
+    }
+    /* Animations */
+    @keyframes sparkEffect {
+      0% { text-shadow: 0 0 2px rgba(255,255,255,0.2); }
+      50% { text-shadow: 0 0 10px rgba(255,255,255,0.8); }
+      100% { text-shadow: 0 0 2px rgba(255,255,255,0.2); }
+    }
+    @keyframes ping {
+      0% { transform: scale(1); opacity: 1; }
+      75%, 100% { transform: scale(2); opacity: 0; }
+    }
+    /* Responsive Adjustments */
+    @media (max-width: 640px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      .cta-btn {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+      }
+    }
+    /* Add these responsive styles for the schedule table */
+    @media (max-width: 768px) {
+      #schedule-table {
+        font-size: 0.75rem;
+      }
+
+      #schedule-table th,
+      #schedule-table td {
+        min-width: 60px;
+        padding: 0.25rem;
+      }
+
+      #schedule-container {
+        margin: 1rem -1rem;
+        border-radius: 0;
+      }
+
+      .courses-box .p-2 {
+        padding: 0.5rem;
+      }
+
+      .font-semibold {
+        font-size: 0.7rem;
+      }
+
+      .text-gray-300 {
+        font-size: 0.65rem;
+      }
+    }
+    /* Add to your existing styles */
+    #schedule-container {
+      background-color: #1f2937;
+      transition: all 0.3s ease;
+    }
+
+    #schedule-table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    #schedule-table th,
+    #schedule-table td {
+      border: 1px solid #4a5568;
+      background-color: #2d3748;
+    }
+
+    .screenshot-preparation {
+      position: relative;
+      z-index: 1000;
+      background-color: #1f2937 !important;
+    }
+
+    /* Update screenshot styles */
+    .screenshot-preparation {
+      position: relative !important;
+      z-index: 1000 !important;
+      background-color: #1f2937 !important;
+      overflow: visible !important;
+      transform: none !important;
+    }
+
+    #schedule-table.screenshot-preparation {
+      border-collapse: collapse !important;
+      border-spacing: 0 !important;
+      width: 100% !important;
+    }
+
+    #schedule-table.screenshot-preparation th,
+    #schedule-table.screenshot-preparation td {
+      background-color: #2d3748 !important;
+      color: #f9fafb !important;
+      border: 1px solid #4a5568 !important;
+      padding: 0.75rem !important;
+      font-size: 14px !important;
+    }
+
+    .screenshot-preparation .courses-box {
+      background-color: #2d3748 !important;
     }
   </style>
 </head>
-<body class="bg-gray-900 text-white">
-  <!-- =====================================================
-       Header Section
-       ===================================================== -->
+<body>
+  <!-- Header -->
   <header>
     <h1>Routine ID Generator</h1>
-    <p id="tagline" class="mt-2 sparked">give your routine an ID</p>
+    <p id="tagline" class="animate-[sparkEffect_2s_ease-out]">More than a routine...</p>
   </header>
 
-  <!-- =====================================================
-       Floating Help Button
-       ===================================================== -->
-  <div id="helpBtn" class="help-btn">
-    <i class="fas fa-question"></i>
-    <span>Help</span>
-  </div>
-
-  <!-- =====================================================
-       Help Modal
-       ===================================================== -->
-  <div id="helpModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-gray-800 p-6 rounded-lg max-w-md mx-auto">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold">How to use</h2>
-        <button id="closeHelp" class="text-2xl">&times;</button>
-      </div>
-      <ol class="list-decimal ml-6 text-sm space-y-2">
-        <li>Create your routine like you do on PrePreReg.</li>
-        <li>Copy the routine ID.</li>
-        <li>Repeat steps 1 &amp; 2 for each friend.</li>
-        <li>Paste all copied IDs into
-          <a href="https://itzmrz.github.io/HomiesUnlocked/" target="_blank" class="text-blue-400 underline">HomiesUnlocked</a>.
-        </li>
-      </ol>
+  <!-- Main Container -->
+  <div class="container p-4">
+    <!-- CTA Box -->
+    <div class="cta-box">
+      <h2 class="text-2xl font-bold mb-4">Your Routine ID</h2>
+      <p class="mb-4">Generate and copy your routine ID with one click.</p>
+      <button id="copy-routine-main" class="cta-btn">Copy Routine ID</button>
     </div>
-  </div>
 
-  <!-- =====================================================
-       Main Container
-       ===================================================== -->
-  <div class="container mx-auto p-4">
-    <!-- =====================================================
-         Course Selection Interface
-         ===================================================== -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-      <!-- Left Panel: Search, Toggle, and Course Lists -->
-      <div class="space-y-4">
-        <!-- Search Bar and Live Toggle (aligned) -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <!-- Search Bar Container -->
-          <div class="search-container flex-1">
-            <input id="search-input" type="text" placeholder="Search courses..." class="w-full h-10 rounded bg-gray-700 text-sm px-3" />
-            <i class="fas fa-search search-icon"></i>
-          </div>
-          <!-- Live Toggle Container (fixed minimum width) -->
-          <div class="toggle-container">
-            <label class="toggle-switch">
-              <input type="checkbox" id="toggle-switch" checked>
-              <span class="toggle-slider"></span>
-            </label>
-            <span id="toggle-label" class="text-sm font-semibold">Live</span>
-          </div>
-        </div>
-        <!-- Live Indicator -->
-        <div id="live-indicator" class="live-indicator">
-          <div class="dot"></div>
-          <span>Live</span>
-        </div>
-        <div id="live-warning" class="hidden text-yellow-400 text-xs">
-          Warning: Live data may be incomplete.
-        </div>
-        <!-- Course Lists & Control Buttons -->
-        <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
-          <!-- Available Courses List -->
-          <div class="flex-1 bg-gray-800 rounded-lg p-2">
-            <h3 class="font-bold text-sm mb-1">Available Courses</h3>
-            <select id="available-courses" multiple class="w-full h-36 md:h-48 bg-gray-700 rounded p-1 text-sm focus:outline-none"></select>
-          </div>
-          <!-- Control Buttons (Add, Remove, Drop All) -->
-          <div class="flex flex-row md:flex-col justify-center items-center gap-2">
-            <button id="add-course" class="w-10 h-10 bg-green-600 rounded hover:bg-green-700 transition-colors flex items-center justify-center">
-              <i class="fas fa-chevron-down block md:hidden"></i>
-              <i class="fas fa-arrow-right hidden md:block"></i>
-            </button>
-            <button id="remove-course" class="w-10 h-10 bg-red-600 rounded hover:bg-red-700 transition-colors flex items-center justify-center">
-              <i class="fas fa-chevron-up block md:hidden"></i>
-              <i class="fas fa-arrow-left hidden md:block"></i>
-            </button>
-            <button id="drop-all-selected" class="w-10 h-10 bg-yellow-600 rounded hover:bg-yellow-700 transition-colors flex items-center justify-center">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
-          <!-- Selected Courses List -->
-          <div class="flex-1 bg-gray-800 rounded-lg p-2">
-            <h3 class="font-bold text-sm mb-1">Selected Courses</h3>
-            <div id="selected-courses" class="w-full h-36 md:h-48 bg-gray-700 rounded p-1 text-sm overflow-y-auto"></div>
-          </div>
-        </div>
+    <!-- Combined Toggle & Search Bar (shifted right) -->
+    <div class="flex-container">
+      <!-- Search Container (moved to left) -->
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search courses...">
+        <i class="fas fa-search"></i>
       </div>
-      <!-- Right Panel: Course Information -->
-      <!-- Revised Course Information Card -->
-      <div class="bg-gray-800 p-4 rounded-lg">
-        <h2 class="text-xl font-bold mb-3 border-b border-gray-600 pb-2">Course Information</h2>
-        <div class="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <span class="font-semibold">Course:</span>
-            <p id="course-name" class="mt-1">-</p>
+
+      <!-- Toggle Wrapper (moved to right) -->
+      <div class="toggle-wrapper ml-auto">
+        <span id="toggle-label" class="text-sm">Live</span>
+        <label class="inline-toggle">
+          <input type="checkbox" id="toggle-switch" checked>
+          <div class="toggle-bg">
+            <div class="toggle-dot"></div>
           </div>
-          <div>
-            <span class="font-semibold">Faculty:</span>
-            <p id="faculty" class="mt-1">-</p>
-          </div>
-          <div>
-            <span class="font-semibold">Section:</span>
-            <p id="section" class="mt-1">-</p>
-          </div>
-          <div>
-            <span class="font-semibold">Seats:</span>
-            <p class="mt-1"><span id="remaining">-</span>/<span id="total-seat">-</span></p>
-          </div>
-          <div class="col-span-2">
-            <span class="font-semibold">Schedule:</span>
-            <p id="time" class="mt-1">-</p>
-          </div>
+        </label>
+        <span id="live-indicator">
+          <div class="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+        </span>
+      </div>
+    </div>
+
+    <!-- Courses Grid: Available, Buttons, Selected, Course Info -->
+    <div class="courses-grid">
+      <!-- Available Courses -->
+      <div class="courses-box">
+        <h3 class="font-bold text-sm mb-2 text-center">Available Courses</h3>
+        <select id="available-courses" multiple class="w-full h-48 bg-gray-700 rounded p-2 text-sm focus:outline-none"></select>
+      </div>
+      <!-- Buttons Column -->
+      <div class="buttons-col">
+        <button id="add-course" class="bg-green-600 hover:bg-green-700 text-white">
+          <i class="fas fa-plus"></i>
+        </button>
+        <button id="remove-course" class="bg-red-600 hover:bg-red-700 text-white">
+          <i class="fas fa-minus"></i>
+        </button>
+        <button id="drop-all-selected" class="bg-yellow-600 hover:bg-yellow-700 text-white">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+      <!-- Selected Courses -->
+      <div class="courses-box">
+        <h3 class="font-bold text-sm mb-2 text-center">Selected Courses</h3>
+        <div id="selected-courses" class="w-full h-48 bg-gray-700 rounded p-2 text-sm overflow-y-auto"></div>
+      </div>
+      <!-- Course Information -->
+      <div class="courses-box info-box">
+        <h3 class="font-bold text-sm mb-2 text-center">Course Information</h3>
+        <div id="course-info-card">
+          <p><strong>Course:</strong> <span id="course-name">-</span></p>
+          <p><strong>Faculty:</strong> <span id="faculty">-</span></p>
+          <p><strong>Section:</strong> <span id="section">-</span></p>
+          <p><strong>Time:</strong> <span id="time">-</span></p>
+          <p><strong>Remaining Seats:</strong> <span id="remaining">-</span> / <span id="total-seat">-</span></p>
         </div>
       </div>
     </div>
 
-    <!-- =====================================================
-         Action Buttons
-         ===================================================== -->
-    <div class="mb-6 flex flex-col sm:flex-row justify-center items-center gap-4">
-      <button id="screenshot-btn" class="flex items-center btn-hover glow-button action-btn rounded-full px-6 py-2 transition shadow" style="background-color: #38a169; color: white;">
-        <i class="fas fa-camera mr-2"></i>Capture Routine
-        <svg id="screenshot-spinner" class="hidden ml-2 h-5 w-5 text-white animate-spin"
-             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-        </svg>
-      </button>
-      <button id="copy-routine" class="flex items-center btn-hover glow-button action-btn rounded-full px-6 py-2 transition shadow" style="background: linear-gradient(to right, #8b5cf6, #6366f1); color: white;">
-        <i class="fas fa-copy mr-2"></i>Copy Routine ID
-      </button>
-      <a id="homies-btn" href="https://itzmrz.github.io/HomiesUnlocked/" target="_blank" class="flex items-center btn-hover action-btn rounded-full px-6 py-2 transition shadow bg-gray-800 hover:bg-gray-700" style="color: white;">
-        <span>HomiesUnlocked</span>
-        <i class="fas fa-arrow-right ml-2"></i>
-      </a>
-    </div>
-
-    <!-- =====================================================
-         Routine Card (Screenshot Target)
-         ===================================================== -->
-    <div id="combined-routine" class="bg-gray-800 rounded-lg p-3 max-w-full overflow-x-auto relative" style="border-radius: 0.5rem; padding: 1rem;">
-      <h2 class="text-2xl font-bold mb-3 text-center">Class Schedule</h2>
-      <table class="w-full mx-auto text-center" id="schedule-table">
-        <thead class="bg-gray-850">
+    <!-- Schedule Table -->
+    <div id="schedule-container" class="courses-box mt-6">
+      <h2 class="text-2xl font-bold mb-4 text-center">Class Schedule</h2>
+      <table class="w-full text-center" id="schedule-table">
+        <thead class="bg-gray-800">
           <tr>
-            <th class="px-2 py-1 border border-gray-700 border-r-4 border-gray-600">Time</th>
+            <th class="px-2 py-1 border border-gray-700 border-r-4">Time</th>
             <th class="px-2 py-1 border border-gray-700">Sun</th>
             <th class="px-2 py-1 border border-gray-700">Mon</th>
             <th class="px-2 py-1 border border-gray-700">Tue</th>
@@ -505,54 +479,53 @@ footer .footer-content a:hover {
             <th class="px-2 py-1 border border-gray-700">Sat</th>
           </tr>
         </thead>
-        <tbody id="schedule" class="divide-y divide-gray-700 text-center">
-          <!-- Schedule rows will be populated via JavaScript -->
+        <tbody id="schedule" class="divide-y divide-gray-700">
+          <!-- Schedule rows will be populated by JavaScript -->
         </tbody>
       </table>
     </div>
 
-    <!-- =====================================================
-         Acknowledgements Section
-         ===================================================== -->
-    <div class="acknowledgements mt-6 p-4 rounded-lg">
-      <div class="ack-header flex justify-center items-center mb-2 cursor-pointer" onclick="toggleAcknowledgements()">
-        <span class="font-medium">Acknowledgements</span>
-        <svg class="arrow h-5 w-5 ml-2 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    <!-- Screenshot & Combined Routine Buttons -->
+    <div class="mt-6 flex justify-center gap-4">
+      <button id="screenshot-btn" class="flex items-center rounded-full px-6 py-2 bg-green-600 text-white transition shadow">
+        <i class="fas fa-camera mr-2"></i>Capture Routine
+        <svg id="screenshot-spinner" class="hidden ml-2 h-5 w-5 text-white animate-spin"
+             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
         </svg>
-      </div>
-      <div class="ack-content" style="max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s ease;">
-        <p class="text-sm">
-          This site owes its existence to the invaluable support and resources of Tashfeen,
-          aka <a href="https://github.com/Eniamza" class="inline-flex items-center gap-1 font-bold transition-colors duration-300" target="_blank" rel="noopener noreferrer">
-            <i class="bi bi-github"></i> Eniamza
-          </a>.
-        </p>
-        <hr class="my-2 border-gray-500" />
-    
-      </div>
+      </button>
+      <button id="combined-routine-btn" class="flex items-center rounded-full px-6 py-2 bg-blue-600 text-white transition shadow">
+        <i class="fas fa-layer-group mr-2"></i>Combined Routine
+      </button>
     </div>
+
+    <!-- Acknowledgements Section using <details> -->
+    <details class="acknowledgements">
+      <summary>
+        Acknowledgements <i class="fas fa-caret-down"></i>
+      </summary>
+      <p class="text-sm" style="text-align: center;">
+        This site owes its existence to the invaluable support and resources of Tashfeen,
+        aka <a href="https://github.com/Eniamza" class="inline-flex items-center gap-1 font-bold transition-colors duration-300" target="_blank" rel="noopener noreferrer">
+        <i class="bi bi-github"></i> Eniamza</a>.
+      </p>
+    </details>
   </div>
 
-  <!-- =====================================================
-       Footer Section (at end of scrolling)
-       ===================================================== -->
+  <!-- Footer -->
   <footer>
-    <div class="footer-content">
-      <a href="https://github.com/itzMRZ/Eniamza-PrePrereg-on-Steroids/tree/main" class="inline-flex items-center gap-1 font-bold transition-colors duration-300" target="_blank" rel="noopener noreferrer">
-        <i class="bi bi-github"></i> By MRZ
+    <div class="container">
+      <a href="https://github.com/itzMRZ/" target="_blank" rel="noopener noreferrer">
+        <i class="bi bi-github"></i> By itzMRZ
       </a>
-  </div>
+    </div>
   </footer>
 
-  <!-- =====================================================
-       Toast Container (for notifications)
-       ===================================================== -->
+  <!-- Toast Container -->
   <div id="toastContainer" class="fixed bottom-20 right-4 z-50 space-y-2"></div>
 
-  <!-- =====================================================
-       JavaScript Functionality
-       ===================================================== -->
+  <!-- JavaScript Functionality -->
   <script>
     /***************************************************
      * Global Variables & Data Source Configuration
@@ -576,12 +549,10 @@ footer .footer-content a:hover {
     const toggleSwitch = document.getElementById('toggle-switch');
     const toggleLabel = document.getElementById('toggle-label');
     const liveIndicator = document.getElementById('live-indicator');
-    const liveWarning = document.getElementById('live-warning');
 
     /***************************************************
      * Utility Functions
      ***************************************************/
-    // Debounce function to limit how often a function can fire
     const debounce = (func, wait) => {
       let timeout;
       return (...args) => {
@@ -589,17 +560,11 @@ footer .footer-content a:hover {
         timeout = setTimeout(() => func(...args), wait);
       };
     };
-
-    // Convert "HH:MM" string to minutes since midnight
     const convertTime = timeStr => {
       const [hours, minutes] = timeStr.split(':').map(Number);
       return hours * 60 + minutes;
     };
-
-    // Check if two time intervals overlap
     const timeOverlap = (a, b) => a.start < b.end && b.start < a.end;
-
-    // Format time string from "HH:MM" to "h:MM AM/PM"
     const formatTime = timeString => {
       const [hours, minutes] = timeString.split(':');
       const hour = parseInt(hours);
@@ -620,8 +585,6 @@ footer .footer-content a:hover {
         console.error('Error loading course data:', error);
       }
     };
-
-    // Populate the "Available Courses" select element
     const populateAvailableCourses = courses => {
       availableList.innerHTML = '';
       courses.sort((a, b) => {
@@ -638,30 +601,14 @@ footer .footer-content a:hover {
       });
       availableList.appendChild(fragment);
     };
-
-    // Update the Course Information panel with details from a course object
     const updateCourseInfo = course => {
       document.getElementById('course-name').textContent = course.courseCode || '-';
       document.getElementById('faculty').textContent = course.faculties || '-';
       document.getElementById('section').textContent = course.sectionName || '-';
-
       if (course.sectionSchedule && course.sectionSchedule.classSchedules?.length) {
-        const formatTimeRange = (startTime, endTime) => {
-          startTime = startTime.toLowerCase();
-          endTime = endTime.toLowerCase();
-          const startMatch = startTime.match(/(\d+:\d+)(am|pm)/);
-          const endMatch = endTime.match(/(\d+:\d+)(am|pm)/);
-          if (startMatch && endMatch) {
-            return startMatch[2] === endMatch[2]
-              ? `${startMatch[1]}-${endMatch[1]}${startMatch[2]}`
-              : `${startMatch[1]}${startMatch[2]}-${endMatch[1]}${endMatch[2]}`;
-          }
-          return `${startTime}-${endTime}`;
-        };
-
         const classLines = course.sectionSchedule.classSchedules
           .map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`);
-        let output = `Class: ${classLines.join(', ')}`;
+        let output = classLines.join(', ');
         if (course.labSchedules?.length) {
           const labLines = course.labSchedules.map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`);
           output += `<br>Lab: ${labLines.join(', ')}`;
@@ -670,8 +617,6 @@ footer .footer-content a:hover {
       } else {
         document.getElementById('time').textContent = '-';
       }
-
-      // Update seat information only when in "Live" mode
       if (toggleSwitch.checked) {
         const capacity = course.capacity ?? '-';
         const consumed = course.consumedSeat ?? 0;
@@ -688,7 +633,6 @@ footer .footer-content a:hover {
      ***************************************************/
     const updateScheduleTable = () => {
       scheduleBody.innerHTML = '';
-      // Create rows for each time slot
       timeSlots.forEach(slot => {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -698,7 +642,6 @@ footer .footer-content a:hover {
         scheduleBody.appendChild(row);
       });
       const courseIntervals = [];
-      // Build an array of time intervals for each selected course
       selectedCourses.forEach(course => {
         const processSchedule = (schedule, type) => {
           const day = schedule.day.toLowerCase();
@@ -714,7 +657,6 @@ footer .footer-content a:hover {
         course.sectionSchedule.classSchedules.forEach(s => processSchedule(s, 'Class'));
         if (course.labSchedules) course.labSchedules.forEach(s => processSchedule(s, 'Lab'));
       });
-      // Determine conflicts between overlapping intervals
       const conflicts = new Set();
       for (let i = 0; i < courseIntervals.length; i++) {
         for (let j = i + 1; j < courseIntervals.length; j++) {
@@ -724,7 +666,6 @@ footer .footer-content a:hover {
           }
         }
       }
-      // Populate schedule table cells with course information
       courseIntervals.forEach(interval => {
         const dayIndex = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'].indexOf(interval.day);
         if (dayIndex === -1) return;
@@ -736,7 +677,7 @@ footer .footer-content a:hover {
           const isConflict = conflicts.has(interval.courseId);
           cell.insertAdjacentHTML('beforeend', `
             <div class="p-2 rounded text-sm mb-1 ${isConflict ? 'bg-red-900' : interval.type === 'Lab' ? 'bg-purple-800' : 'bg-gray-700'}">
-              <div class="font-semibold">${interval.course.courseCode} [${interval.course.sectionName}] - ${interval.course.faculties}</div>
+              <div class="font-semibold">${interval.course.courseCode} [${interval.course.sectionName}]</div>
               <div class="text-gray-300">${interval.type === 'Lab' ? interval.course.labRoomName : interval.course.roomName}</div>
               ${isConflict ? '<div class="text-red-300 mt-1">Conflict</div>' : ''}
             </div>
@@ -744,8 +685,6 @@ footer .footer-content a:hover {
         });
       });
     };
-
-    // Update the selected courses list and refresh the schedule table
     const updateSelectedCourses = () => {
       selectedCourses = selectedCourses.map(sel => {
         const updated = allCourses.find(c => c.courseCode === sel.courseCode && c.sectionName === sel.sectionName);
@@ -755,13 +694,9 @@ footer .footer-content a:hover {
       const highlighted = selectedContainer.querySelector('.active-selected');
       if (highlighted) {
         const index = Array.from(selectedContainer.children).indexOf(highlighted);
-        if (index !== -1) {
-          updateCourseInfo(selectedCourses[index]);
-        }
+        if (index !== -1) updateCourseInfo(selectedCourses[index]);
       }
     };
-
-    // Remove a course from the selected list
     const removeCourse = (course, courseEntryElement) => {
       const index = selectedCourses.findIndex(c => c.courseCode === course.courseCode && c.sectionName === course.sectionName);
       if (index !== -1) {
@@ -779,30 +714,27 @@ footer .footer-content a:hover {
     document.addEventListener('DOMContentLoaded', () => {
       fetchCourseData();
       updateScheduleTable();
-      // Start the spark animation for the tagline
       const tagline = document.getElementById('tagline');
-      tagline.classList.add('sparked');
-      setTimeout(() => tagline.classList.remove('sparked'), 2500);
+      tagline.classList.add('animate-[sparkEffect_2s_ease-out]');
+      setTimeout(() => tagline.classList.remove('animate-[sparkEffect_2s_ease-out]'), 2500);
     });
-
-    // Toggle between Live and Archive data modes
-    toggleSwitch.addEventListener('change', async () => {
-      if (toggleSwitch.checked) {
-        dataUrl = "https://usis-cdn.eniamza.com/connect.json";
-        toggleLabel.textContent = "Live";
-        liveIndicator.classList.remove("hidden");
-        liveWarning.classList.add("hidden");
-      } else {
-        dataUrl = "spring-usisdump.json";
-        toggleLabel.textContent = "Archive";
-        liveIndicator.classList.add("hidden");
-        liveWarning.classList.remove("hidden");
-      }
-      await fetchCourseData();
-      updateSelectedCourses();
-    });
-
-    // Handle clicks on selected courses for highlighting
+    if (toggleSwitch) {
+      toggleSwitch.addEventListener('change', async () => {
+        if (toggleSwitch.checked) {
+          dataUrl = "https://usis-cdn.eniamza.com/connect.json";
+          toggleLabel.textContent = "Live";
+          // Live mode: blinking green LED only (no text)
+          liveIndicator.innerHTML = '<div class="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>';
+        } else {
+          dataUrl = "spring-usisdump.json";
+          toggleLabel.textContent = "Archive";
+          // Archive mode: solid red LED only
+          liveIndicator.innerHTML = '<div class="w-2 h-2 bg-red-500 rounded-full"></div>';
+        }
+        await fetchCourseData();
+        updateSelectedCourses();
+      });
+    }
     selectedContainer.addEventListener('click', e => {
       const target = e.target;
       if (target.closest('.remove-btn')) return;
@@ -813,8 +745,6 @@ footer .footer-content a:hover {
       const index = Array.from(selectedContainer.children).indexOf(entry);
       if (index !== -1) updateCourseInfo(selectedCourses[index]);
     });
-
-    // Update course info when a course is selected from the available list
     availableList.addEventListener('change', e => {
       const selectedOption = e.target.selectedOptions[0];
       if (selectedOption) {
@@ -822,26 +752,21 @@ footer .footer-content a:hover {
         updateCourseInfo(course);
       }
     });
-
-    // Add course button click event
     document.getElementById('add-course').addEventListener('click', () => {
       const selectedOption = availableList.selectedOptions[0];
       if (!selectedOption) return;
       const newCourse = JSON.parse(selectedOption.value);
-      // Prevent adding more than one section of the same course
       if (selectedCourses.some(c => c.courseCode === newCourse.courseCode)) {
         showToast("You cannot add more than one section of the same course. Please drop the other section first!", "warning");
         return;
       }
       selectedCourses.push(newCourse);
-      // Create a new course entry element for the selected courses list
       const courseEntry = document.createElement('div');
-      courseEntry.className = 'selected-course-item flex items-center justify-between bg-gray-700 p-2 mb-2 rounded text-sm cursor-pointer';
+      courseEntry.className = 'selected-course-item';
       courseEntry.innerHTML = `
         <span>${newCourse.courseCode} - ${newCourse.sectionName}</span>
         <button class="remove-btn text-red-400 hover:text-red-600"><i class="fas fa-times"></i></button>
       `;
-      // Attach event listener to the remove button within the course entry
       courseEntry.querySelector('.remove-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         removeCourse(newCourse, courseEntry);
@@ -850,8 +775,6 @@ footer .footer-content a:hover {
       availableList.remove(selectedOption.index);
       updateScheduleTable();
     });
-
-    // Remove course button event
     document.getElementById('remove-course').addEventListener('click', () => {
       const activeEntry = selectedContainer.querySelector('.active-selected');
       if (activeEntry) {
@@ -865,8 +788,6 @@ footer .footer-content a:hover {
         }
       }
     });
-
-    // Drop all selected courses event
     document.getElementById('drop-all-selected').addEventListener('click', () => {
       selectedCourses.forEach(course => {
         const option = new Option(`${course.courseCode} - ${course.sectionName} (${course.faculties})`, JSON.stringify(course));
@@ -876,8 +797,6 @@ footer .footer-content a:hover {
       selectedContainer.innerHTML = '';
       updateScheduleTable();
     });
-
-    // Search input event with debounce for better performance
     document.getElementById('search-input').addEventListener('input', debounce(e => {
       const term = e.target.value.toLowerCase();
       const filtered = allCourses.filter(course =>
@@ -887,28 +806,23 @@ footer .footer-content a:hover {
       );
       populateAvailableCourses(filtered);
     }, 300));
-
-    /***************************************************
-     * Updated Copy Routine ID Functionality
-     * Formats the output JSON as requested (with case-sensitive keys)
-     ***************************************************/
-    document.getElementById('copy-routine').addEventListener('click', () => {
+    document.getElementById('copy-routine-main').addEventListener('click', () => {
+      if (selectedCourses.length === 0) {
+        showToast('No courses selected. Please add courses before copying your Routine ID.', 'warning');
+        return;
+      }
       const routineData = selectedCourses.map(course => {
-        // Format the class schedule with uppercase day names
         const classTimes = course.sectionSchedule.classSchedules
           .map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`)
           .join(', ');
-
-        // Format lab schedule if available; otherwise, return "N/A"
         const labTimes = (course.labSchedules && course.labSchedules.length)
-          ? course.labSchedules.map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`).join(', ')
+          ? course.labSchedules
+              .map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`)
+              .join(', ')
           : "N/A";
-
-        // Use exam details if available; otherwise, fallback to "N/A"
         const midExam = course.sectionSchedule.midExamDetail ? course.sectionSchedule.midExamDetail : "N/A";
         const finalExam = course.sectionSchedule.finalExamDetail ? course.sectionSchedule.finalExamDetail : "N/A";
         const examDetails = `Mid: ${midExam}, Final: ${finalExam}`;
-
         return {
           "Course": course.courseCode,
           "section": `Section ${course.sectionName}`,
@@ -920,67 +834,108 @@ footer .footer-content a:hover {
           "Exam": examDetails
         };
       });
-
-      // Copy the formatted JSON to the clipboard with 2-space indentation
       navigator.clipboard.writeText(JSON.stringify(routineData, null, 2));
       showToast('Routine copied to clipboard!');
     });
-
-    /***************************************************
-     * Enhanced Screenshot Functionality
-     * - Applies a moderate brightness/contrast boost
-     * - Adds a temporary animated overlay (ignored during capture)
-     * - Ensures consistent font styles in the captured image
-     ***************************************************/
     document.getElementById('screenshot-btn').addEventListener('click', async () => {
       const screenshotBtn = document.getElementById('screenshot-btn');
       const spinner = document.getElementById('screenshot-spinner');
-      const routineElement = document.getElementById('combined-routine');
+      const routineElement = document.getElementById('schedule-container');
 
       try {
-        // Disable the button and show spinner
         screenshotBtn.disabled = true;
         spinner.classList.remove('hidden');
 
-        // Create a temporary overlay for visual processing feedback
-        const overlay = document.createElement('div');
-        overlay.className = 'processing-overlay';
-        overlay.style.position = 'absolute';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.width = '100%';
-        overlay.style.height = '100%';
-        overlay.style.backgroundColor = 'rgba(255,255,255,0.1)';
-        overlay.style.pointerEvents = 'none';
-        overlay.style.zIndex = '10';
-        overlay.style.animation = 'pulse 1s infinite';
-        // Ensure the routine element is positioned relatively
-        routineElement.style.position = 'relative';
-        routineElement.appendChild(overlay);
+        // Allow pending UI updates
+        await new Promise(resolve => setTimeout(resolve, 100));
 
-        // Temporarily boost brightness/contrast for a more vivid screenshot
-        const originalFilter = routineElement.style.filter;
-        routineElement.style.filter = 'brightness(1.1) contrast(1.05)';
-
-        // Capture screenshot with high resolution (scale: 3) while ignoring the overlay
-        const canvas = await html2canvas(routineElement, {
-          backgroundColor: null, // use element's original background
-          scale: 3,
-          useCORS: true,
-          scrollY: -window.scrollY,
-          ignoreElements: (element) => element.classList.contains('processing-overlay')
+        // Save original inline styles and heading styles
+        const originalScroll = window.scrollY;
+        const originalStyles = {
+          width: routineElement.style.width,
+          height: routineElement.style.height,
+          overflow: routineElement.style.overflow,
+          position: routineElement.style.position,
+          background: routineElement.style.background
+        };
+        const headingElements = routineElement.querySelectorAll('h2');
+        const headingStyles = [];
+        headingElements.forEach((heading, i) => {
+          headingStyles[i] = { color: heading.style.color };
         });
 
-        // Create a temporary download link and trigger the download
+        // Add screenshot preparation class and set inline styles for a consistent background
+        routineElement.classList.add('screenshot-preparation');
+        routineElement.style.width = '1200px';
+        routineElement.style.height = 'auto';
+        routineElement.style.overflow = 'visible';
+        routineElement.style.position = 'relative';
+        routineElement.style.background = '#1f2937';
+
+        // Force header text color to white
+        headingElements.forEach(heading => {
+          heading.style.color = '#f9fafb';
+        });
+
+        // Adjust cell styles for improved render: force text color and uniform padding
+        const cells = routineElement.querySelectorAll('td, th');
+        const cellStyles = [];
+        cells.forEach((cell, i) => {
+          cellStyles[i] = {
+            background: cell.style.background,
+            width: cell.style.width,
+            padding: cell.style.padding,
+            color: cell.style.color
+          };
+          cell.style.background = '#2d3748';
+          cell.style.width = '150px';
+          cell.style.padding = '0.75rem';
+          cell.style.color = '#f9fafb';
+        });
+
+        // Capture using html2canvas with updated options
+        const canvas = await html2canvas(routineElement, {
+          backgroundColor: '#1f2937',
+          scale: window.devicePixelRatio || 2,
+          useCORS: true,
+          allowTaint: false,
+          scrollY: -window.scrollY,
+          onclone: (clonedDoc) => {
+            const clonedElement = clonedDoc.getElementById('schedule-container');
+            clonedElement.style.transform = 'none';
+            clonedElement.style.boxShadow = 'none';
+            clonedElement.classList.add('screenshot-preparation');
+          }
+        });
+
+        // Optionally adjust canvas style after capture
+        canvas.style.width = '100%';
+        canvas.style.height = 'auto';
+
+        // Restore original inline styles and remove the added class
+        Object.entries(originalStyles).forEach(([prop, value]) => {
+          routineElement.style[prop] = value || '';
+        });
+        routineElement.classList.remove('screenshot-preparation');
+        cells.forEach((cell, i) => {
+          Object.entries(cellStyles[i]).forEach(([prop, value]) => {
+            cell.style[prop] = value || '';
+          });
+        });
+        // Restore original heading color styles
+        headingElements.forEach((heading, i) => {
+          heading.style.color = headingStyles[i].color;
+        });
+        window.scrollTo(0, originalScroll);
+
+        // Create and trigger image download
+        const imgData = canvas.toDataURL('image/png', 1.0);
         const link = document.createElement('a');
         link.download = `routine-${new Date().toISOString().slice(0,10)}.png`;
-        link.href = canvas.toDataURL('image/png');
+        link.href = imgData;
         link.click();
 
         showToast('Screenshot saved successfully!', 'success');
-        // Remove the overlay and restore the original filter
-        routineElement.removeChild(overlay);
-        routineElement.style.filter = originalFilter;
       } catch (error) {
         console.error('Screenshot error:', error);
         showToast('Failed to capture screenshot. Please try again.', 'error');
@@ -989,10 +944,9 @@ footer .footer-content a:hover {
         spinner.classList.add('hidden');
       }
     });
-
-    /***************************************************
-     * Toast Notification Function
-     ***************************************************/
+    document.getElementById('combined-routine-btn').addEventListener('click', () => {
+      window.location.href = "https://homies-unlocked.itzmrz.xyz";
+    });
     const showToast = (message, type = "info") => {
       if (!toastContainer) return;
       const bgClasses = {
@@ -1010,81 +964,6 @@ footer .footer-content a:hover {
         setTimeout(() => toast.remove(), 300);
       }, 3000);
     };
-
-    /***************************************************
-     * Acknowledgements Toggle Function
-     ***************************************************/
-    function toggleAcknowledgements() {
-      const content = document.querySelector('.ack-content');
-      const arrow = document.querySelector('.arrow');
-      if (content.classList.contains('active')) {
-        content.classList.remove('active');
-        arrow.classList.remove('active');
-        content.style.maxHeight = "0";
-        content.style.opacity = "0";
-      } else {
-        content.classList.add('active');
-        arrow.classList.add('active');
-        content.style.maxHeight = "500px";
-        content.style.opacity = "1";
-      }
-    }
-
-    /***************************************************
-     * Help Modal Handling with Body Scroll Prevention
-     ***************************************************/
-    const helpBtnEl = document.getElementById('helpBtn');
-    const helpModal = document.getElementById('helpModal');
-    const closeHelp = document.getElementById('closeHelp');
-    helpBtnEl.addEventListener('click', () => {
-      helpModal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden'; // Disable background scrolling
-    });
-    closeHelp.addEventListener('click', () => {
-      helpModal.classList.add('hidden');
-      document.body.style.overflow = 'auto';
-    });
-    helpModal.addEventListener('click', (e) => {
-      if (e.target === helpModal) {
-        helpModal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-      }
-    });
   </script>
-
-  <!-- =====================================================
-       Optional Theme Switcher Script
-       ===================================================== -->
-  <script>
-    const themeSwitcher = document.getElementById('theme-switcher');
-    if(themeSwitcher){
-      const themeText = themeSwitcher.querySelector('.theme-text');
-      const themes = ['dark', 'light', 'pink'];
-      let currentThemeIndex = 0;
-      function applyTheme(theme) {
-        document.body.setAttribute('data-theme', theme);
-        themeText.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
-        let iconHTML = '';
-        if (theme === 'dark') {
-          iconHTML = '<i class="bi bi-moon theme-icon"></i>';
-        } else if (theme === 'light') {
-          iconHTML = '<i class="bi bi-sun theme-icon"></i>';
-        } else if (theme === 'pink') {
-          iconHTML = '<i class="bi bi-fire theme-icon"></i>';
-        }
-        const existingIcon = themeSwitcher.querySelector('.theme-icon');
-        if(existingIcon) { existingIcon.remove(); }
-        themeSwitcher.insertAdjacentHTML('afterbegin', iconHTML);
-      }
-      themeSwitcher.addEventListener('click', () => {
-        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-        applyTheme(themes[currentThemeIndex]);
-      });
-      applyTheme('dark');
-    }
-  </script>
-
-
-
 </body>
 </html>
