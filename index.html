@@ -406,7 +406,7 @@
     <!-- Combined Toggle & Search Bar (shifted right) -->
     <div class="flex-container">
       <!-- Search Container (moved to left) -->
-      <div class="search-container">
+      <div class="search-container hidden lg:block">
         <input type="text" id="search-input" placeholder="Search courses...">
         <i class="fas fa-search"></i>
       </div>
@@ -428,13 +428,13 @@
 
     <!-- Courses Grid: Available, Buttons, Selected, Course Info -->
     <div class="courses-grid">
-      <!-- Available Courses -->
-      <div class="courses-box">
+      <!-- Available Courses (desktop only) -->
+      <div class="courses-box hidden lg:block">
         <h3 class="font-bold text-sm mb-2 text-center">Available Courses</h3>
         <select id="available-courses" multiple class="w-full h-48 bg-gray-700 rounded p-2 text-sm focus:outline-none"></select>
       </div>
-      <!-- Buttons Column -->
-      <div class="buttons-col">
+      <!-- Buttons Column (desktop only) -->
+      <div class="buttons-col hidden lg:flex">
         <button id="add-course" class="bg-green-600 hover:bg-green-700 text-white">
           <i class="fas fa-plus"></i>
         </button>
@@ -444,6 +444,31 @@
         <button id="drop-all-selected" class="bg-yellow-600 hover:bg-yellow-700 text-white">
           <i class="fas fa-trash"></i>
         </button>
+      </div>
+      <!-- Mobile Course Selection Experience (visible only on mobile) -->
+      <div class="mobile-course-selection lg:hidden mt-4 p-4 bg-gray-800 rounded">
+        <h3 class="text-lg font-bold mb-2 text-center">Add Course</h3>
+        <div class="mb-2">
+          <input
+            type="text"
+            id="mobile-course-code"
+            placeholder="Enter Course Code"
+            class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600"
+          />
+        </div>
+        <div class="mb-2">
+          <select
+            id="mobile-section-select"
+            class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600"
+          >
+            <option value="">Select Section</option>
+          </select>
+        </div>
+        <div>
+          <button id="mobile-add-course" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded">
+            Add Course +
+          </button>
+        </div>
       </div>
       <!-- Selected Courses -->
       <div class="courses-box">
@@ -997,6 +1022,71 @@
         setTimeout(() => toast.remove(), 300);
       }, 3000);
     };
+
+    // Mobile experience for course selection
+    document.getElementById('mobile-course-code').addEventListener('input', debounce(function(e) {
+      let codeQuery = e.target.value.toLowerCase().trim();
+      let mobileSectionSelect = document.getElementById('mobile-section-select');
+      mobileSectionSelect.innerHTML = '<option value="">Select Section</option>';
+
+      // Filter courses based on course code (substring matching)
+      let filteredCourses = allCourses.filter(course =>
+        course.courseCode.toLowerCase().includes(codeQuery)
+      );
+
+      filteredCourses.forEach(course => {
+        const option = document.createElement('option');
+        option.value = JSON.stringify(course);
+        option.text = `${course.courseCode} - ${course.sectionName} (${course.faculties})`;
+        mobileSectionSelect.appendChild(option);
+      });
+    }, 300));
+
+    document.getElementById('mobile-add-course').addEventListener('click', () => {
+      let mobileSectionSelect = document.getElementById('mobile-section-select');
+      let selectedOption = mobileSectionSelect.selectedOptions[0];
+      if (!selectedOption || !selectedOption.value) {
+        showToast('Please select a valid course section!', 'warning');
+        return;
+      }
+      let newCourse = JSON.parse(selectedOption.value);
+
+      // Prevent adding more than one section of the same course
+      if (selectedCourses.some(c => c.courseCode === newCourse.courseCode)) {
+        showToast("You cannot add more than one section of the same course. Please drop the other section first!", "warning");
+        return;
+      }
+
+      selectedCourses.push(newCourse);
+      const courseEntry = document.createElement('div');
+      courseEntry.className = 'selected-course-item';
+      courseEntry.innerHTML = `
+        <span>${newCourse.courseCode} - ${newCourse.sectionName}</span>
+        <button class="remove-btn text-red-400 hover:text-red-600"><i class="fas fa-times"></i></button>
+      `;
+      courseEntry.querySelector('.remove-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeCourse(newCourse, courseEntry);
+      });
+      selectedContainer.appendChild(courseEntry);
+
+      // Remove from desktop available courses dropdown if present
+      const availableList = document.getElementById('available-courses');
+      for (let i = 0; i < availableList.options.length; i++) {
+        const option = availableList.options[i];
+        const courseObj = JSON.parse(option.value);
+        if (courseObj.courseCode === newCourse.courseCode && courseObj.sectionName === newCourse.sectionName) {
+          availableList.remove(i);
+          break;
+        }
+      }
+
+      // Clear mobile inputs
+      document.getElementById('mobile-course-code').value = '';
+      mobileSectionSelect.innerHTML = '<option value="">Select Section</option>';
+
+      updateScheduleTable();
+    });
   </script>
 
   <script>
