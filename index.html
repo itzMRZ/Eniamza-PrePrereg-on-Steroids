@@ -485,15 +485,17 @@
       </table>
     </div>
 
-    <!-- Screenshot & Combined Routine Buttons -->
+    <!-- Screenshot, Copy, & Combined Routine Buttons -->
     <div class="mt-6 flex justify-center gap-4">
       <button id="screenshot-btn" class="flex items-center rounded-full px-6 py-2 bg-green-600 text-white transition shadow">
         <i class="fas fa-camera mr-2"></i>Capture Routine
-        <svg id="screenshot-spinner" class="hidden ml-2 h-5 w-5 text-white animate-spin"
-             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <svg id="screenshot-spinner" class="hidden ml-2 h-5 w-5 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
         </svg>
+      </button>
+      <button id="copy-routine-btn" class="flex items-center rounded-full px-6 py-2 bg-indigo-600 text-white transition shadow">
+        <i class="fas fa-copy mr-2"></i>Copy Routine
       </button>
       <button id="combined-routine-btn" class="flex items-center rounded-full px-6 py-2 bg-blue-600 text-white transition shadow">
         <i class="fas fa-layer-group mr-2"></i>Combined Routine
@@ -946,6 +948,37 @@
     });
     document.getElementById('combined-routine-btn').addEventListener('click', () => {
       window.location.href = "https://homies-unlocked.itzmrz.xyz";
+    });
+    document.getElementById('copy-routine-btn').addEventListener('click', () => {
+      if (selectedCourses.length === 0) {
+        showToast('No courses selected. Please add courses before copying your Routine ID.', 'warning');
+        return;
+      }
+      const routineData = selectedCourses.map(course => {
+        const classTimes = course.sectionSchedule.classSchedules
+          .map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`)
+          .join(', ');
+        const labTimes = (course.labSchedules && course.labSchedules.length)
+          ? course.labSchedules
+              .map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`)
+              .join(', ')
+          : "N/A";
+        const midExam = course.sectionSchedule.midExamDetail ? course.sectionSchedule.midExamDetail : "N/A";
+        const finalExam = course.sectionSchedule.finalExamDetail ? course.sectionSchedule.finalExamDetail : "N/A";
+        const examDetails = `Mid: ${midExam}, Final: ${finalExam}`;
+        return {
+          "Course": course.courseCode,
+          "section": `Section ${course.sectionName}`,
+          "faculty": course.faculties,
+          "Class": classTimes,
+          "Class_room": course.roomName,
+          "Lab": labTimes,
+          "Lab_room": course.labRoomName ? course.labRoomName : "N/A",
+          "Exam": examDetails
+        };
+      });
+      navigator.clipboard.writeText(JSON.stringify(routineData, null, 2));
+      showToast('Routine copied to clipboard!');
     });
     const showToast = (message, type = "info") => {
       if (!toastContainer) return;
