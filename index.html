@@ -577,6 +577,28 @@
     const toggleLabel = document.getElementById('toggle-label');
     const liveIndicator = document.getElementById('live-indicator');
 
+    // Save courses to localStorage
+    const saveCoursesToLocalStorage = () => {
+        try {
+            localStorage.setItem('selectedCourses', JSON.stringify(selectedCourses));
+        } catch (e) {
+            console.error('Failed to save courses to localStorage:', e);
+        }
+    };
+
+    // Load courses from localStorage
+    const loadCoursesFromLocalStorage = () => {
+        try {
+            const savedCourses = localStorage.getItem('selectedCourses');
+            if (savedCourses) {
+                return JSON.parse(savedCourses);
+            }
+        } catch (e) {
+            console.error('Failed to load courses from localStorage:', e);
+        }
+        return [];
+    };
+
     /***************************************************
      * Utility Functions
      ***************************************************/
@@ -732,14 +754,58 @@
         const option = new Option(`${course.courseCode} - ${course.sectionName} (${course.faculties})`, JSON.stringify(course));
         availableList.add(option);
         updateScheduleTable();
+        saveCoursesToLocalStorage(); // Add this line
       }
     };
 
     /***************************************************
      * Event Listeners Setup
      ***************************************************/
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchCourseData();
+    document.addEventListener('DOMContentLoaded', async () => {
+      await fetchCourseData();
+
+      // Load saved courses after fetching course data
+      const savedCourses = loadCoursesFromLocalStorage();
+      if (savedCourses.length > 0) {
+          savedCourses.forEach(savedCourse => {
+              // Find the corresponding course in allCourses
+              const matchingCourse = allCourses.find(c =>
+                  c.courseCode === savedCourse.courseCode &&
+                  c.sectionName === savedCourse.sectionName
+              );
+
+              if (matchingCourse) {
+                  selectedCourses.push(matchingCourse);
+
+                  // Create and add the course entry to the UI
+                  const courseEntry = document.createElement('div');
+                  courseEntry.className = 'selected-course-item';
+                  courseEntry.innerHTML = `
+                      <span>${matchingCourse.courseCode} - ${matchingCourse.sectionName}</span>
+                      <button class="remove-btn text-red-400 hover:text-red-600">
+                          <i class="fas fa-times"></i>
+                      </button>
+                  `;
+
+                  courseEntry.querySelector('.remove-btn').addEventListener('click', (e) => {
+                      e.stopPropagation();
+                      removeCourse(matchingCourse, courseEntry);
+                  });
+
+                  selectedContainer.appendChild(courseEntry);
+
+                  // Remove from available courses
+                  const option = availableList.querySelector(`option[value='${JSON.stringify(matchingCourse)}']`);
+                  if (option) {
+                      option.remove();
+                  }
+              }
+          });
+
+          updateScheduleTable();
+          showToast('Loaded your previous courses!', 'success');
+      }
+
       updateScheduleTable();
       const tagline = document.getElementById('tagline');
       tagline.classList.add('animate-[sparkEffect_2s_ease-out]');
@@ -801,6 +867,7 @@
       selectedContainer.appendChild(courseEntry);
       availableList.remove(selectedOption.index);
       updateScheduleTable();
+      saveCoursesToLocalStorage(); // Add this line
     });
     document.getElementById('remove-course').addEventListener('click', () => {
       const activeEntry = selectedContainer.querySelector('.active-selected');
@@ -812,6 +879,7 @@
           const option = new Option(`${removedCourse.courseCode} - ${removedCourse.sectionName} (${removedCourse.faculties})`, JSON.stringify(removedCourse));
           availableList.add(option);
           updateScheduleTable();
+          saveCoursesToLocalStorage(); // Add this line
         }
       }
     });
@@ -823,6 +891,7 @@
       selectedCourses = [];
       selectedContainer.innerHTML = '';
       updateScheduleTable();
+      saveCoursesToLocalStorage(); // Add this line
     });
     document.getElementById('search-input').addEventListener('input', debounce(e => {
       const term = e.target.value.toLowerCase();
@@ -1086,6 +1155,7 @@
       mobileSectionSelect.innerHTML = '<option value="">Select Section</option>';
 
       updateScheduleTable();
+      saveCoursesToLocalStorage(); // Add this line
     });
   </script>
 
