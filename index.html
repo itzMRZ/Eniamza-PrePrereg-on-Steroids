@@ -552,6 +552,9 @@
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed bottom-20 right-4 z-50 space-y-2"></div>
 
+  <!-- Import the compressor before main script -->
+  <script src="compressor.js"></script>
+
   <!-- JavaScript Functionality -->
   <script>
     /***************************************************
@@ -654,6 +657,9 @@
       document.getElementById('course-name').textContent = course.courseCode || '-';
       document.getElementById('faculty').textContent = course.faculties || '-';
       document.getElementById('section').textContent = course.sectionName || '-';
+      document.getElementById('time').textContent = '-';
+      document.getElementById('remaining').textContent = "-";
+      document.getElementById('total-seat').textContent = "-";
       if (course.sectionSchedule && course.sectionSchedule.classSchedules?.length) {
         const classLines = course.sectionSchedule.classSchedules
           .map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`);
@@ -876,7 +882,7 @@
         if (index !== -1) {
           const removedCourse = selectedCourses.splice(index, 1)[0];
           activeEntry.remove();
-          const option = new Option(`${removedCourse.courseCode} - ${removedCourse.sectionName} (${removedCourse.faculties})`, JSON.stringify(removedCourse));
+          const option = new Option(`${removedCourse.courseCode} - ${removedRemoved.sectionName} (${removedCourse.faculties})`, JSON.stringify(removedCourse));
           availableList.add(option);
           updateScheduleTable();
           saveCoursesToLocalStorage(); // Add this line
@@ -907,31 +913,11 @@
         showToast('No courses selected. Please add courses before copying your Routine ID.', 'warning');
         return;
       }
-      const routineData = selectedCourses.map(course => {
-        const classTimes = course.sectionSchedule.classSchedules
-          .map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`)
-          .join(', ');
-        const labTimes = (course.labSchedules && course.labSchedules.length)
-          ? course.labSchedules
-              .map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`)
-              .join(', ')
-          : "N/A";
-        const midExam = course.sectionSchedule.midExamDetail ? course.sectionSchedule.midExamDetail : "N/A";
-        const finalExam = course.sectionSchedule.finalExamDetail ? course.sectionSchedule.finalExamDetail : "N/A";
-        const examDetails = `Mid: ${midExam}, Final: ${finalExam}`;
-        return {
-          "Course": course.courseCode,
-          "section": `Section ${course.sectionName}`,
-          "faculty": course.faculties,
-          "Class": classTimes,
-          "Class_room": course.roomName,
-          "Lab": labTimes,
-          "Lab_room": course.labRoomName ? course.labRoomName : "N/A",
-          "Exam": examDetails
-        };
-      });
-      navigator.clipboard.writeText(JSON.stringify(routineData, null, 2));
-      showToast('Routine copied to clipboard!');
+      // Use actual selected courses' section IDs
+      const sectionIds = selectedCourses.map(course => course.sectionId);
+      const routineId = compressor.compressForCopy(sectionIds);
+      navigator.clipboard.writeText(routineId);
+      showToast('Routine ID copied to clipboard!');
     });
     document.getElementById('screenshot-btn').addEventListener('click', async () => {
       const screenshotBtn = document.getElementById('screenshot-btn');
@@ -1048,31 +1034,11 @@
         showToast('No courses selected. Please add courses before copying your Routine ID.', 'warning');
         return;
       }
-      const routineData = selectedCourses.map(course => {
-        const classTimes = course.sectionSchedule.classSchedules
-          .map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`)
-          .join(', ');
-        const labTimes = (course.labSchedules && course.labSchedules.length)
-          ? course.labSchedules
-              .map(s => `${s.day.toUpperCase()} (${formatTime(s.startTime)}-${formatTime(s.endTime)})`)
-              .join(', ')
-          : "N/A";
-        const midExam = course.sectionSchedule.midExamDetail ? course.sectionSchedule.midExamDetail : "N/A";
-        const finalExam = course.sectionSchedule.finalExamDetail ? course.sectionSchedule.finalExamDetail : "N/A";
-        const examDetails = `Mid: ${midExam}, Final: ${finalExam}`;
-        return {
-          "Course": course.courseCode,
-          "section": `Section ${course.sectionName}`,
-          "faculty": course.faculties,
-          "Class": classTimes,
-          "Class_room": course.roomName,
-          "Lab": labTimes,
-          "Lab_room": course.labRoomName ? course.labRoomName : "N/A",
-          "Exam": examDetails
-        };
-      });
-      navigator.clipboard.writeText(JSON.stringify(routineData, null, 2));
-      showToast('Routine copied to clipboard!');
+      // Use actual selected courses' section IDs
+      const sectionIds = selectedCourses.map(course => course.sectionId);
+      const routineId = compressor.compressForCopy(sectionIds);
+      navigator.clipboard.writeText(routineId);
+      showToast('Routine ID copied to clipboard!');
     });
     const showToast = (message, type = "info") => {
       if (!toastContainer) return;
@@ -1137,6 +1103,40 @@
         e.stopPropagation();
         removeCourse(newCourse, courseEntry);
       });
+      selectedContainer.appendChild(courseEntry);
+
+      // Remove from desktop available courses dropdown if present
+      const availableList = document.getElementById('available-courses');
+      for (let i = 0; i < availableList.options.length; i++) {
+        const option = availableList.options[i];
+        const courseObj = JSON.parse(option.value);
+        if (courseObj.courseCode === newCourse.courseCode && courseObj.sectionName === newCourse.sectionName) {
+          availableList.remove(i);
+          break;
+        }
+      }
+
+      // Clear mobile inputs
+      document.getElementById('mobile-course-code').value = '';
+      mobileSectionSelect.innerHTML = '<option value="">Select Section</option>';
+
+      updateScheduleTable();
+      saveCoursesToLocalStorage(); // Add this line
+    });
+  </script>
+
+  <script>
+  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+
+</body>
+</html>
       selectedContainer.appendChild(courseEntry);
 
       // Remove from desktop available courses dropdown if present
