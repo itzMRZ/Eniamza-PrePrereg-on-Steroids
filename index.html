@@ -295,8 +295,7 @@
     @keyframes ping {
       0% { transform: scale(1); opacity: 1; }
       75%, 100% { transform: scale(2); opacity: 0; }
-    }
-    /* Responsive Adjustments */
+    }    /* Responsive Adjustments */
     @media (max-width: 640px) {
       header h1 {
         font-size: 2rem;
@@ -304,6 +303,31 @@
       .cta-btn {
         padding: 0.5rem 1rem;
         font-size: 1rem;
+      }      /* Mobile button adjustments - no horizontal scroll */
+      .mobile-buttons {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 0.25rem !important;
+        justify-content: center !important;
+        overflow-x: visible !important;
+        padding: 0 !important;
+      }
+      .mobile-buttons button {
+        font-size: 0.65rem !important;
+        padding: 0.4rem 0.6rem !important;
+        white-space: nowrap !important;
+        flex: 0 0 auto !important;
+        max-width: calc(50% - 0.125rem) !important;
+      }
+      .mobile-buttons button i {
+        font-size: 0.75rem !important;
+        margin-right: 0.2rem !important;
+      }
+      /* Make Combined Routine button take full width on second line if needed */
+      .mobile-buttons button:nth-child(3) {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        max-width: 100% !important;
       }
     }
     /* Add these responsive styles for the schedule table */
@@ -508,10 +532,8 @@
           <!-- Schedule rows will be populated by JavaScript -->
         </tbody>
       </table>
-    </div>
-
-    <!-- Screenshot, Copy, & Combined Routine Buttons -->
-    <div class="mt-6 flex justify-center gap-4">
+    </div>    <!-- Screenshot, Copy, & Combined Routine Buttons -->
+    <div class="mt-6 flex justify-center gap-4 mobile-buttons">
       <button id="screenshot-btn" class="flex items-center rounded-full px-6 py-2 bg-green-600 text-white transition shadow">
         <i class="fas fa-camera mr-2"></i>Capture Routine
         <svg id="screenshot-spinner" class="hidden ml-2 h-5 w-5 text-white animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -1103,40 +1125,6 @@
         e.stopPropagation();
         removeCourse(newCourse, courseEntry);
       });
-      selectedContainer.appendChild(courseEntry);
-
-      // Remove from desktop available courses dropdown if present
-      const availableList = document.getElementById('available-courses');
-      for (let i = 0; i < availableList.options.length; i++) {
-        const option = availableList.options[i];
-        const courseObj = JSON.parse(option.value);
-        if (courseObj.courseCode === newCourse.courseCode && courseObj.sectionName === newCourse.sectionName) {
-          availableList.remove(i);
-          break;
-        }
-      }
-
-      // Clear mobile inputs
-      document.getElementById('mobile-course-code').value = '';
-      mobileSectionSelect.innerHTML = '<option value="">Select Section</option>';
-
-      updateScheduleTable();
-      saveCoursesToLocalStorage(); // Add this line
-    });
-  </script>
-
-  <script>
-  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/speed-insights/script.js"></script>
-
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/insights/script.js"></script>
-
-</body>
-</html>
       selectedContainer.appendChild(courseEntry);
 
       // Remove from desktop available courses dropdown if present
