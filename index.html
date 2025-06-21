@@ -3,8 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <!-- Responsive viewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Routine ID Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Routine ID Generator</title>
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://routine-id.itzmrz.xyz/">
+  <meta property="og:title" content="Routine ID Generator">
+  <meta property="og:description" content="Generate and share your class schedule with a simple routine ID. Create, capture, and copy your university routine with one click.">
+  <meta property="og:image" content="https://routine-id.itzmrz.xyz/opengraph.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Routine ID Generator">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://routine-id.itzmrz.xyz/">
+  <meta property="twitter:title" content="Routine ID Generator - More than a routine">
+  <meta property="twitter:description" content="Generate and share your class schedule with a simple routine ID. Create, capture, and copy your university routine with one click.">
+  <meta property="twitter:image" content="https://routine-id.itzmrz.xyz/opengraph.jpg">
+
   <!-- Favicon -->
   <link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAABP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAQAAAAABEAABEAAAABEAAAARAAABEAEAAAEQABEAARAAABEBEAAAEQAAARARAAABEAARAAEQAAAQARAAABEAAAARAAAAARAAARAAAAAAEAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rel="icon" type="image/x-icon">
   <!-- Tailwind CSS -->
@@ -14,9 +31,18 @@
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <!-- html2canvas for screenshot functionality -->
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-  <!-- Google Fonts -->
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Microsoft Clarity -->
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "s2qmrse3e1");
+  </script>
+
   <style>
     /* Global Styles */
     body {
@@ -281,10 +307,126 @@
     }
     footer a:hover {
       color: #a0aec0;
-    }
-    /* Toast */
+    }    /* Toast */
     #toastContainer {
       z-index: 1000;
+    }
+
+    /* Facebook/Messenger Browser Warning Modal */
+    .browser-warning-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .browser-warning-content {
+      background-color: #2d3748;
+      border-radius: 0.75rem;
+      padding: 2rem;
+      margin: 1rem;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .browser-warning-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: #9ca3af;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .browser-warning-close:hover {
+      color: #f9fafb;
+    }
+
+    .browser-warning-title {
+      color: #f59e0b;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .browser-warning-text {
+      color: #f9fafb;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .browser-warning-link {
+      background-color: #374151;
+      border: 1px solid #4b5563;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      margin: 1rem 0;
+      font-family: monospace;
+      color: #10b981;
+      font-size: 0.9rem;
+      word-break: break-all;
+      user-select: all;
+    }
+
+    .browser-warning-buttons {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .browser-warning-btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .browser-warning-btn-primary {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .browser-warning-btn-primary:hover {
+      background-color: #2563eb;
+    }
+
+    .browser-warning-btn-secondary {
+      background-color: #6b7280;
+      color: white;
+    }
+
+    .browser-warning-btn-secondary:hover {
+      background-color: #4b5563;
+    }
+
+    @media (max-width: 640px) {
+      .browser-warning-content {
+        margin: 0.5rem;
+        padding: 1.5rem;
+      }
+
+      .browser-warning-buttons {
+        flex-direction: column;
+      }
+
+      .browser-warning-btn {
+        width: 100%;
+      }
     }
     /* Animations */
     @keyframes sparkEffect {
@@ -325,9 +467,10 @@
       }
       /* Make Combined Routine button take full width on second line if needed */
       .mobile-buttons button:nth-child(3) {
-        flex: 0 0 auto !important;
-        width: auto !important;
+        flex: 0 0 100% !important;
+        width: 100% !important;
         max-width: 100% !important;
+        margin-top: 0.25rem !important;
       }
     }
     /* Add these responsive styles for the schedule table */
@@ -570,15 +713,91 @@
       </a>
     </div>
   </footer>
-
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed bottom-20 right-4 z-50 space-y-2"></div>
+
+  <!-- Facebook/Messenger Browser Warning Modal -->
+  <div id="browser-warning-modal" class="browser-warning-modal" style="display: none;">
+    <div class="browser-warning-content">
+      <button class="browser-warning-close" onclick="closeBrowserWarning()">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="browser-warning-title">
+        <i class="fas fa-exclamation-triangle"></i>
+        Open in Browser
+      </div>
+
+      <p class="browser-warning-text">
+        For the best experience, please open this link in your browser (Chrome, Safari, Firefox, etc.) instead of the Facebook/Messenger in-app browser.
+      </p>
+
+      <div class="browser-warning-link" onclick="copyLinkToClipboard()">
+        https://routine-id.itzmrz.xyz/
+        <i class="fas fa-copy" style="margin-left: 0.5rem; opacity: 0.7;"></i>
+      </div>
+
+      <div class="browser-warning-buttons">
+        <button class="browser-warning-btn browser-warning-btn-primary" onclick="copyLinkToClipboard()">
+          <i class="fas fa-copy"></i> Copy Link
+        </button>
+        <button class="browser-warning-btn browser-warning-btn-secondary" onclick="closeBrowserWarning()">
+          Continue Anyway
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Import the compressor before main script -->
   <script src="compressor.js"></script>
 
   <!-- JavaScript Functionality -->
-  <script>
+  <script>    /***************************************************
+     * Facebook/Messenger Browser Detection & Warning
+     ***************************************************/
+
+    // Detect if user is in Facebook/Messenger in-app browser
+    const detectFacebookBrowser = () => {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      return userAgent.includes('FBAN') || userAgent.includes('FBAV') || userAgent.includes('MessengerForiOS') || userAgent.includes('Messenger');
+    };
+
+    // Copy link to clipboard
+    const copyLinkToClipboard = () => {
+      const link = 'https://routine-id.itzmrz.xyz/';
+      navigator.clipboard.writeText(link).then(() => {
+        showToast('Link copied to clipboard! Paste it in your browser.', 'success');
+      }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = link;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showToast('Link copied to clipboard! Paste it in your browser.', 'success');
+      });
+    };
+
+    // Close browser warning modal
+    const closeBrowserWarning = () => {
+      const modal = document.getElementById('browser-warning-modal');
+      modal.style.display = 'none';
+      // Store preference to not show again in this session
+      sessionStorage.setItem('browserWarningDismissed', 'true');
+    };
+
+    // Show browser warning modal if needed
+    const checkAndShowBrowserWarning = () => {
+      const isInFacebookBrowser = detectFacebookBrowser();
+      const wasDismissed = sessionStorage.getItem('browserWarningDismissed');
+
+      if (isInFacebookBrowser && !wasDismissed) {
+        const modal = document.getElementById('browser-warning-modal');
+        modal.style.display = 'flex';
+      }
+    };
+
     /***************************************************
      * Global Variables & Data Source Configuration
      ***************************************************/
@@ -788,8 +1007,10 @@
 
     /***************************************************
      * Event Listeners Setup
-     ***************************************************/
-    document.addEventListener('DOMContentLoaded', async () => {
+     ***************************************************/    document.addEventListener('DOMContentLoaded', async () => {
+      // Check if user is in Facebook/Messenger browser and show warning
+      checkAndShowBrowserWarning();
+
       await fetchCourseData();
 
       // Load saved courses after fetching course data
