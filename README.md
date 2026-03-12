@@ -2,6 +2,7 @@
 
 A web-based tool for building and sharing university class schedules. It bundles a Base69 "Section Compressor" that turns six-digit section IDs into compact routine strings you can copy, store, or share.
 
+**LIVE PREVIEW : https://routine-id.itzmrz.xyz/**
 ## Overview
 
 - **Frontend**: `index.html` (Tailwind-powered UI with clipboard helpers and dataset toggle).
